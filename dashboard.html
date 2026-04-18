@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Flowlet AI is a premium, seamlessly integrated AI workspace. Automate your Gmail, manage your calendar, and execute intelligent prompt templates with a state-of-the-art assistant designed to boost your productivity and boundless creativity."/>
+<title>Flowlet AI</title>
+<!-- SUPABASE AUTH GUARD & GOOGLE IDENTITY SERVICES -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'https://oesauhpxumthgardzeym.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lc2F1aHB4dW10aGdhcmR6ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjczNjgsImV4cCI6MjA4OTA0MzM2OH0.SOH5_DjSeWShbZGg3PJwz7IykTxuacAx6211QWOO-8M';
+  
+  try {
+    var isPopup = (window.name === 'GoogleAuth');
+    var rawHash = window.location.hash;
+    var params = window.location.search || rawHash.substring(1);
+    var pTkk = null;
+    
+    if (params) {
+      var p = new URLSearchParams(params.replace('?', ''));
+      pTkk = p.get('provider_token') || p.get('access_token');
+      if (pTkk) localStorage.setItem('vg_ptk', pTkk);
+    }
+
+    if (isPopup) {
+      // Browser strict security often blocks window.close(), so we hide the dashboard UI so the user isn't confused.
+      document.addEventListener("DOMContentLoaded", () => {
+         document.body.innerHTML = '<div style="background:#111; color:#0f0; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; font-family:sans-serif;"><h2>✅ Login Successful!</h2><p>You can close this small window safely.</p></div>';
+      });
+      window.close(); // Try to close anyway
+    }
+  } catch(e) { console.error(e); }
+  
+  window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+
+  window.supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session && session.provider_token) {
+      localStorage.setItem('vg_ptk', session.provider_token);
+      window.isGlobalGmailConnected = true;
+      if (window.name === 'GoogleAuth' || window.opener) {
+         window.close(); // Automatically close popup after Supabase parses token!
+      }
+    } else if (event === 'SIGNED_OUT') {
+      localStorage.removeItem('vg_ptk');
+    }
+  });
+
+  async function checkAuth() {
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    if (!session) {
+      console.log('User not authenticated, but allowing them to view the dashboard.');
+    }
+  }
+  checkAuth();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f7;--s1:#ffffff;--s2:#f4f4f5;
+  --b1:#e5e7eb;--b2:#d1d5db;
+  --tx:#111827;--mu:#9ca3af;--mu2:#6b7280;
+  --ac:#3b82f6;--gr:#22c55e;
+  --f:'Inter',sans-serif;--r:12px;
+}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);height:100vh;overflow:hidden;display:flex}
+
+/* ── ICON BAR (always visible) ── */
+.icon-bar{width:52px;display:flex;flex-direction:column;align-items:center;padding:14px 0;border-right:1px solid var(--b1);gap:4px;flex-shrink:0;background:var(--bg);z-index:10}
+.ib-logo{margin-bottom:16px;color:var(--tx)}
+.ib{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:none;background:transparent;color:var(--mu);cursor:pointer;transition:.15s}
+.ib:hover,.ib.on{background:var(--s2);color:var(--tx)}
+.ib-bot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px}
+.av{width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;border-right:1px solid var(--b1);display:flex;flex-direction:column;padding:12px 8px;overflow-y:auto;flex-shrink:0;background:var(--bg);transition:width .25s ease,opacity .25s ease;z-index:9}
+.sidebar.hidden{width:0;opacity:0;overflow:hidden;padding:0}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.s-title{font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:6px 6px 4px}
+.nc-btn{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;border:none;background:transparent;color:var(--mu2);font-size:13px;font-family:var(--f);cursor:pointer;transition:.15s;width:100%;margin-bottom:6px}
+.nc-btn:hover{background:var(--s2);color:var(--tx)}
+.t-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--mu2);transition:.15s}
+.t-item:hover,.t-item.on{background:var(--s2);color:var(--tx)}
+.g-card{margin-top:auto;padding:10px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r)}
+.g-row{display:flex;align-items:center;justify-content:space-between}
+.g-info{display:flex;align-items:center;gap:8px}
+.con-btn{background:var(--tx);color:var(--bg);border:none;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;font-family:var(--f);cursor:pointer;transition:.2s}
+.con-btn.ok{background:#16a34a;color:#fff}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh;transition:all .25s ease}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--b1);flex-shrink:0}
+.plan-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu2)}
+.badge{border:1px solid var(--b2);border-radius:6px;padding:2px 8px;font-size:11px}
+.up{color:var(--ac);cursor:pointer;font-weight:500;font-size:12px}
+.tb-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--b2);border-radius:8px;background:transparent;color:var(--mu2);font-size:12px;font-family:var(--f);cursor:pointer;transition:.15s}
+.tb-btn:hover{background:var(--s2);color:var(--tx)}
+
+/* ── HOME VIEW ── */
+#home{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 24px 100px;position:relative;overflow-y:auto;width:100%}
+.bg-letter{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);font-size:130vh;font-weight:800;color:transparent;-webkit-text-stroke:1.5px rgba(0,0,0,0.1);z-index:0;pointer-events:none;letter-spacing:-0.05em;font-family:'Inter',sans-serif;font-style:italic;line-height:1;user-select:none;-webkit-mask-image:linear-gradient(to bottom, black 60%, transparent 95%);mask-image:linear-gradient(to bottom, black 60%, transparent 95%);}
+@keyframes pageLoad { from { opacity: 0; transform: translateY(30px); filter: blur(3px); } to { opacity: 1; transform: translateY(0); filter: blur(0px); } }
+.home-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:31vh; animation: pageLoad 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;}
+
+/* ── HEADING ── */
+.home-title{font-size:48px;font-weight:400;letter-spacing:-0.03em;text-align:center;color:var(--tx);margin-bottom:32px;line-height:1.1;font-family:'Inter',sans-serif}
+.home-subtitle{color:var(--mu);font-size:15px;margin-bottom:70px;font-weight:400;text-align:center;letter-spacing:-0.01em}
+
+/* ── INPUT CARD ── */
+.icard{width:100%;max-width:760px;background:#ffffff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;transition:border-color .2s,box-shadow .2s;box-shadow:0 4px 15px rgba(0,0,0,0.02)}
+.icard:focus-within{border-color:#d4d4d8;box-shadow:0 6px 20px rgba(0,0,0,0.04)}
+#ci,#ci2{width:100%;background:transparent;border:none;outline:none;resize:none;font-family:var(--f);font-size:15px;font-weight:400;color:var(--tx);padding:14px 20px 8px;min-height:65px;max-height:200px;overflow-y:auto;line-height:1.6}
+#ci::placeholder,#ci2::placeholder{color:#a1a1aa;font-weight:400;font-size:15px}
+
+/* ── TOOLBAR ── */
+.itoolbar{display:flex;align-items:center;padding:6px 14px 10px;gap:8px}
+.t-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:7px;border:none;background:transparent;color:var(--tx);cursor:pointer;transition:.15s}
+.t-btn:hover{background:var(--s2)}
+.msel{appearance:none;background:rgba(59,130,246,0.08);border:none;border-radius:6px;color:var(--ac);font-size:11px;font-family:var(--f);padding:5px 8px;cursor:pointer;outline:none;font-weight:600}
+.msel option{background:var(--s1);color:var(--tx)}
+.send-btn{margin-left:auto;width:34px;height:34px;background:#e5e7eb;border:none;border-radius:50%;color:#9ca3af;cursor:not-allowed;display:flex;align-items:center;justify-content:center;transition:.15s;padding:8px}
+.send-btn.active{background:#111827;color:#fff;cursor:pointer}
+.send-btn:hover{background:#d1d5db;color:#4b5563}
+.send-btn.active:hover{background:#374151}
+.send-btn svg{stroke-width:2.5}
+
+/* ── APP BAR (icons row) ── */
+.app-bar{display:flex;align-items:center;padding:8px 16px 14px;gap:10px;border-top:1px solid var(--b1)}
+.app-icons{display:flex;align-items:center}
+.ai-ico{width:22px;height:22px;border-radius:6px;background:var(--s2);border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;margin-left:-6px;overflow:hidden;transition:.15s}
+.ai-ico:first-child{margin-left:0}
+.ai-ico:hover{transform:scale(1.15);z-index:5}
+.ai-ico img{width:15px;height:15px;object-fit:contain}
+.ab-txt{font-size:12px;color:var(--mu2);font-weight:400}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:12px;margin:60px 0 24px;padding:0;background:transparent;flex-wrap:wrap;justify-content:center}
+.tab{padding:8px 18px;border-radius:24px;font-size:13px;font-weight:500;color:var(--mu2);cursor:pointer;border:1px solid var(--b1);background:transparent;font-family:var(--f);transition:.15s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tab:hover{background:var(--s2);transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,0.02);}
+.tab.on{background:var(--tx);color:var(--bg);border-color:var(--tx);}
+
+/* ── TEMPLATES GRID ── */
+.tpl-sec { width:100%; max-width:1200px; display:flex; flex-direction:column; align-items:center; margin-bottom: 80px; }
+.tpl-grid { width:100%; display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; margin-top:8px;}
+.tpl-card { background:var(--s1); border:1px solid var(--b1); border-radius:16px; padding:28px; display:flex; flex-direction:column; text-align:left; cursor:pointer; transition:0.2s; box-shadow:0 1px 2px rgba(0,0,0,0.02); min-height: 220px; }
+.tpl-card:hover { border-color:var(--b2); box-shadow:0 8px 30px rgba(0,0,0,0.06); transform:translateY(-4px); }
+.tpl-icon { display:flex; align-items:center; justify-content:flex-start; margin-bottom:20px; gap:10px; }
+.tpl-icon img { height: 26px; object-fit: contain; }
+.tpl-icon svg { stroke: var(--tx) !important; width:22px; height:22px; }
+.tpl-title { font-size:17.5px; font-weight:600; color:var(--tx); margin:0 0 12px 0; line-height:1.4; font-family:'Inter',sans-serif; }
+.tpl-desc { font-size:14.5px; color:var(--mu2); line-height:1.6; flex:1; margin:0; font-family:var(--f); }
+.tpl-foot { margin-top:32px; display:flex; justify-content:space-between; align-items:center; font-family:var(--f); }
+.tpl-runs { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--mu2); font-weight:500; }
+.tpl-act { font-size:14px; color:var(--mu2); font-weight:500; display:flex; align-items:center; gap:2px; transition:0.2s; }
+.tpl-act:hover { color:var(--tx); }
+
+/* ── CHAT VIEW ── */
+@keyframes chatOpen {
+  from { opacity: 0; transform: translateY(60px) scale(0.94); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+}
+#chat{display:none;flex:1;flex-direction:column;min-height:0;align-items:center; animation: chatOpen 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;}
+#mh{width:100%;max-width:1000px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:32px 10px 8px;min-height:0}
+#mh::-webkit-scrollbar{width:4px}
+#mh::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.msg{display:flex;flex-direction:column;width:100%}
+.msg.user{align-items:flex-end}
+.msg.ai{align-items:flex-start}
+.bubble{max-width:85%;padding:11px 16px;border-radius:14px;font-size:14.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;animation:fu .2s ease}
+.msg.user .bubble{background:var(--bg);color:var(--tx);border-radius:14px 14px 4px 14px;border:1px solid var(--b1)}
+.msg.ai .bubble{background:transparent;color:var(--tx);padding:4px 0;max-width:90%}
+.ecrd{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:9px 13px;font-size:12px;margin-bottom:2px}
+.ebadge{background:rgba(34,197,94,.15);color:#16a34a;font-size:10px;border-radius:20px;padding:2px 9px;font-weight:600}
+.dots{display:inline-flex;gap:4px;padding:6px 0}
+.dots span{width:6px;height:6px;background:var(--mu);border-radius:50%;animation:bk 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+
+/* ── CHAT OPTIONS MENU ── */
+.t-item .t-opt-btn { background:transparent; border:none; color:var(--mu); cursor:pointer; padding:4px; display:flex; align-items:center; border-radius:4px; margin-left:auto; opacity:0; transition:0.2s; }
+.t-item:hover .t-opt-btn { opacity:1; }
+.t-item.on .t-opt-btn { opacity:1; }
+.t-opt-btn:hover { background:var(--b2); color:var(--tx); }
+.chat-menu { display:none; position:absolute; background:#ffffff; border:1px solid #e5e7eb; border-radius:8px; padding:6px; box-shadow:0 10px 25px rgba(0,0,0,0.1); z-index:9999; flex-direction:column; min-width:140px; }
+.chat-menu button { background:transparent; border:none; color:#374151; cursor:pointer; padding:8px 12px; font-size:13px; font-family:var(--f); display:flex; align-items:center; gap:10px; border-radius:6px; text-align:left; font-weight:500; transition:background 0.1s; }
+.chat-menu button:hover { background:#f3f4f6; color:#111827; }
+.chat-menu button.danger { color:#ef4444; }
+.chat-menu button.danger:hover { background:#fef2f2; color:#dc2626; }
+.chat-menu svg { width:14px; height:14px; opacity:0.8; }
+
+#cinput-wrap{width:100%;max-width:1000px;padding:12px 10px 20px;flex-shrink:0}
+#cinput-wrap .icard{max-width:100%}
+#ci2{min-height:70px;padding-top:6px;padding-bottom:16px;}
+
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bk{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes modalPop{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- ICON BAR -->
+<div class="icon-bar">
+  <div class="ib-logo" style="margin-bottom:6px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C12 7.5 7.5 12 0 12C7.5 12 12 16.5 12 24C12 16.5 16.5 12 24 12C16.5 12 12 7.5 12 0Z"/></svg>
+  </div>
+  <button class="ib" title="Toggle Sidebar" onclick="toggleSidebar()" style="margin-bottom:12px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+  </button>
+  <button class="ib on" id="ncib" title="New Chat" style="background:#f4f4f5;border-radius:6px;margin-bottom:4px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+  </button>
+  <button class="ib" title="Images">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+  </button>
+  
+  <div class="ib-bot">
+    <button class="ib" title="Add">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <button class="nc-btn" id="ncBtn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Chat
+  </button>
+  <div class="s-title">Recent</div>
+  <div id="tlist"></div>
+  <div class="g-card" style="margin-top:auto;">
+    <div style="font-size:10px;color:var(--mu2);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Integrations</div>
+    <div class="g-row">
+      <div class="g-info">
+        <img src="https://img.icons8.com/color/512/gmail-new.png" style="width:20px;height:20px;object-fit:contain;" alt="Gmail">
+        <div>
+          <div style="font-size:12px;font-weight:500;">Gmail</div>
+          <div id="gst" style="font-size:10px;color:var(--mu);">Not connected</div>
+        </div>
+      </div>
+      <button class="con-btn" id="gcb" onclick="connectGmail()">Connect</button>
+    </div>
+    <div class="g-row" style="margin-top:10px;">
+      <div class="g-info">
+        <img src="https://img.icons8.com/color/512/google-calendar--v2.png" style="width:20px;height:20px;object-fit:contain;" alt="Calendar">
+        <div>
+          <div style="font-size:12px;font-weight:500;">Google Calendar</div>
+          <div id="cst" style="font-size:10px;color:var(--mu);">Not connected</div>
+        </div>
+      </div>
+      <button class="con-btn" id="ccb" onclick="connectGmail()">Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar" style="border:none;padding:16px 24px;">
+    <div style="font-weight:600;font-size:14px;color:var(--tx);display:flex;align-items:center;gap:4px;cursor:pointer;">
+      GLM-4.7 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-top:1px;"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div id="authButtons" style="display:flex;gap:12px;align-items:center;font-family:var(--f);">
+      <button onclick="window.location.href='login.html'" style="background:transparent;border:none;color:var(--tx);font-weight:500;font-size:13.5px;cursor:pointer;padding:6px 12px;border-radius:8px;font-family:var(--f);">Log in</button>
+      <button id="signUpGoBtn" onclick="window.location.href='login.html?mode=signup'" style="background:var(--tx);border:none;color:var(--bg);font-weight:500;font-size:13.5px;cursor:pointer;padding:8px 16px;border-radius:10px;font-family:var(--f);">Sign up</button>
+    </div>
+    <div id="userProfile" style="display:none;gap:10px;align-items:center;font-family:var(--f);">
+      <div id="userInitial" style="width:28px;height:28px;border-radius:50%;background:#e5e7eb;color:#111;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">G</div>
+      <span id="userEmailDisplay" style="font-size:13px;color:var(--mu2);font-weight:500;">Guest</span>
+      <button id="logoutBtn" style="background:transparent;border:1px solid #ef4444;color:#ef4444;font-weight:500;font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;margin-left:8px;transition:0.15s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">Logout</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home">
+    <div class="bg-letter">F</div>
+
+    <div class="home-inner">
+      <h1 class="home-title">Hi, I'm Flowlet AI</h1>
+      <p class="home-subtitle">Interact with Flowlet AI and explore the boundless creative world</p>
+
+      <div class="icard">
+        <textarea id="ci" placeholder="How can I help you today?" rows="1"></textarea>
+        <div class="itoolbar">
+          <button class="t-btn" title="Add">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="t-btn" title="Web">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </button>
+          <button class="t-btn" title="Model" style="color:var(--ac);background:rgba(59,130,246,0.1);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </button>
+          <button class="send-btn" id="sb" onclick="send()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- TEMPLATES SECTION -->
+      <div class="tpl-sec">
+        <div class="tabs">
+          <button class="tab on" onclick="document.getElementById('ci').focus()">Featured</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Sales</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Marketing</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Engineering</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">HR</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Ops</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Productivity</button>
+          <button class="tab" onclick="document.getElementById('ci').focus()">Personal</button>
+        </div>
+
+        <div class="tpl-grid">
+          <!-- Card 1 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Given a LinkedIn profile, find the contact info for:';document.getElementById('ci').focus()">
+            <div class="tpl-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+            <h3 class="tpl-title">Find Contact Info from LinkedIn</h3>
+            <p class="tpl-desc">Given a LinkedIn profile, find the contact info</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 6.4k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Research meeting attendees for a specific company and prospect, then email prep notes:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Gmail">
+              <img src="https://img.icons8.com/color/512/google-calendar--v2.png" alt="Calendar">
+            </div>
+            <h3 class="tpl-title">Sales Research before Meetings</h3>
+            <p class="tpl-desc">Research meeting attendees for a specific company and prospect, then email prep notes</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 5.7k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Create a sales report from sales data:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/google-sheets.png" alt="Sheets">
+            </div>
+            <h3 class="tpl-title">Sales Data Analysis</h3>
+            <p class="tpl-desc">Create a sales report from sales data</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.8k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Create a learning roadmap to learn ';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Gmail">
+              <img src="https://img.icons8.com/color/512/google-docs--v1.png" alt="Docs">
+            </div>
+            <h3 class="tpl-title">Teach Me</h3>
+            <p class="tpl-desc">Create a learning roadmap to learn {{subject}}</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.8k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Generate a full content calendar from a campaign document:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/google-docs--v1.png" alt="Docs">
+              <img src="https://img.icons8.com/color/512/google-calendar--v2.png" alt="Calendar">
+            </div>
+            <h3 class="tpl-title">Content Calendar</h3>
+            <p class="tpl-desc">Generate a full content calendar from a campaign document</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.8k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Research customer and generate a proposal:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/google-docs--v1.png" alt="Docs">
+            </div>
+            <h3 class="tpl-title">Proposal Generation for Customer</h3>
+            <p class="tpl-desc">Research customer and generate a proposal</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.8k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 7 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Research my competitors and format the data into a Google doc:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/google-docs--v1.png" alt="Docs">
+            </div>
+            <h3 class="tpl-title">Research Competitors</h3>
+            <p class="tpl-desc">Research my competitors and format the data into a Google doc</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.7k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Card 8 -->
+          <div class="tpl-card" onclick="document.getElementById('ci').value='Summarize the news for me daily:';document.getElementById('ci').focus()">
+            <div class="tpl-icon">
+              <img src="https://img.icons8.com/color/512/gmail-new.png" alt="Gmail">
+              <img src="https://img.icons8.com/color/512/google-docs--v1.png" alt="Docs">
+            </div>
+            <h3 class="tpl-title">Daily News</h3>
+            <p class="tpl-desc">Summarize the news for me daily</p>
+            <div class="tpl-foot">
+              <div class="tpl-runs"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 3.5k runs</div>
+              <div class="tpl-act">Run now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT VIEW -->
+  <div id="chat">
+    <div id="mh"></div>
+    <div id="cinput-wrap">
+      <div class="icard">
+        <textarea id="ci2" placeholder="Ask anything..." rows="1"></textarea>
+        <div class="itoolbar">
+          <button class="t-btn" title="Add">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="t-btn" title="Web">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </button>
+          <button class="t-btn" title="Model" style="color:var(--ac);background:rgba(59,130,246,0.1);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </button>
+          <select class="msel" id="ms2" style="margin-left:4px;">
+            <option value="gemini">Gemini Flash</option>
+            <option value="claude">Claude</option>
+            <option value="search">🔍 Search</option>
+          </select>
+          <button class="send-btn" id="sb2" onclick="send2()" style="display:flex;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GMAIL OAUTH CONFIGURATION (No Webhook Modal) -->
+
+<script>
+var tid = null;
+
+// Dynamic function to ALWAYS get the fresh token status, bypassing execution order issues
+function getPTk() { 
+  var ptk = localStorage.getItem('vg_ptk');
+  if (ptk) return ptk;
+  
+  // Ultimate Supabase Raw Extraction Bypass
+  try {
+    var rawSb = localStorage.getItem('sb-oesauhpxumthgardzeym-auth-token');
+    if (rawSb) {
+      var sbSess = JSON.parse(rawSb);
+      if (sbSess && sbSess.provider_token) {
+        localStorage.setItem('vg_ptk', sbSess.provider_token); // Cache it
+        return sbSess.provider_token;
+      }
+    }
+  } catch(e) {}
+  
+  return window.isGlobalGmailConnected || ''; 
+}
+function isConnected() { return !!getPTk(); }
+
+// Watcher: Automatically updates the UI if the token arrives via Head Script asynchronously
+setInterval(function() {
+  var b = document.getElementById('gcb');
+  if (b && isConnected() && b.textContent === 'Connect') {
+    updateGUI(true);
+  }
+}, 500);
+
+async function connectGmail(){
+  if(isConnected()){ 
+    localStorage.removeItem('vg_ptk');
+    localStorage.removeItem('sb-oesauhpxumthgardzeym-auth-token');
+    window.isGlobalGmailConnected = '';
+    updateGUI(false); 
+    try{ await window.supabaseClient.auth.signOut(); }catch(e){}
+    return; 
+  }
+  
+  var s = document.getElementById('gst'); 
+  s.textContent = 'Opening Google Auth...';
+
+  // CUSTOM SUPABASE POPUP: Slashy AI Style!
+  const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
+     provider: 'google',
+     options: {
+       // Maangi hui Permissions: Gmail padhne ke liye, Calendar dekhne aur Events banane ke liye
+       scopes: 'https://mail.google.com/ https://www.googleapis.com/auth/calendar',
+       skipBrowserRedirect: true // SUPER IMPORTANT: Do not move away from Dashboard!
+     }
+  });
+
+  if (error) {
+     s.textContent = "Supabase Error: " + error.message;
+     return;
+  }
+
+  if (data && data.url) {
+     var w = 520, h = 600;
+     var popup = window.open(data.url, "GoogleAuth", "width="+w+",height="+h+",top="+(screen.height/2-h/2)+",left="+(screen.width/2-w/2));
+     
+     // Nazar rekhenge kab popup band hoga
+     var timer = setInterval(function(){
+       if(!popup || popup.closed) {
+          clearInterval(timer);
+          // 2 seconds wait for storage sync
+          setTimeout(() => {
+             if (isConnected()) {
+                updateGUI(true);
+             } else {
+                s.textContent = 'Google Auth cancelled or failed.';
+             }
+          }, 1000);
+       }
+     }, 1000);
+  }
+}
+
+function updateGUI(c) { 
+  try {
+    var b = document.getElementById('gcb'), s = document.getElementById('gst'); 
+    s.textContent = 'Checking connection...';
+    
+    window.supabaseClient.auth.getSession().then(({data, error}) => {
+      var session = data ? data.session : null;
+      var hasLocal = !!localStorage.getItem('vg_ptk');
+      var hasSessPtk = session && session.provider_token;
+      
+      var dbg = "URL Hash: " + (window.location.hash ? window.location.hash.substring(0, 20) + "..." : "None") + " | ";
+      dbg += "Local: " + hasLocal + " | ";
+      dbg += "Sess: " + (session ? "YES" : "NO") + " | ";
+      dbg += "Sess.pTk: " + !!hasSessPtk + " | ";
+      if (error) dbg += "Err: " + error.message;
+
+      var cb = document.getElementById('ccb'), cs = document.getElementById('cst');
+
+      if(c){
+        b.textContent='Connected ✓'; b.className='con-btn ok'; 
+        s.textContent='Active | ' + dbg; 
+        s.style.color='var(--gr)';
+        if(cb){ cb.textContent='Connected ✓'; cb.className='con-btn ok'; cs.textContent='Active'; cs.style.color='var(--gr)'; }
+      } else {
+        b.textContent='Connect'; b.className='con-btn'; 
+        s.textContent=dbg; 
+        s.style.color='var(--mu)';
+        if(cb){ cb.textContent='Connect'; cb.className='con-btn'; cs.textContent='Not connected'; cs.style.color='var(--mu)'; }
+      } 
+    }).catch(e => {
+      s.textContent = "Fail: " + e.message;
+    });
+  } catch(err) {
+    if(s) s.textContent = "Fatal: " + err.message;
+  }
+}
+
+// STORAGE
+var ST='vt';
+function all(){try{return JSON.parse(localStorage.getItem(ST))||[];}catch(e){return[];}}
+function save(t){localStorage.setItem(ST,JSON.stringify(t));}
+function gt(id){return all().find(function(t){return t.id===id;})||null;}
+function push(role,txt){var ts=all(),t=ts.find(function(x){return x.id===tid;});if(!t){t={id:tid,title:txt.substring(0,38)+(txt.length>38?'…':''),messages:[],at:Date.now()};ts.unshift(t);}t.messages.push({role:role,text:txt});save(ts);renderList();}
+
+function deleteT(id){
+  var ts=all();
+  var filtered = ts.filter(function(x){return x.id !== id;});
+  save(filtered);
+  if(tid === id) { newT(); } else { renderList(); }
+}
+
+function renderList(){
+  var l=document.getElementById('tlist');
+  l.innerHTML='';
+  all().slice(0,25).forEach(function(t){
+    var d=document.createElement('div');
+    d.className='t-item'+(t.id===tid?' on':'');
+    d.style.display = 'flex'; d.style.alignItems = 'center'; d.style.justifyContent = 'space-between';
+    
+    var titleSpan = document.createElement('div');
+    titleSpan.style.cssText = 'display:flex; align-items:center; gap:8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; flex:1;';
+    titleSpan.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="overflow:hidden; text-overflow:ellipsis;">' + t.title + '</span>';
+    d.appendChild(titleSpan);
+
+    var delBtn = document.createElement('button');
+    delBtn.className = 't-opt-btn';
+    delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+    delBtn.title = "Options";
+    
+    delBtn.onclick = function(e){
+      showChatMenu(e, t.id);
+    };
+
+    d.appendChild(delBtn);
+    
+    d.onclick=function(){loadT(t.id);};
+    l.appendChild(d);
+  });
+}
+
+// VIEWS — sidebar shows on chat, hides on home
+function goHome(){
+  document.getElementById('home').style.display='flex';
+  document.getElementById('chat').style.display='none';
+}
+function goChat(){
+  document.getElementById('home').style.display='none';
+  var c=document.getElementById('chat');c.style.display='flex';c.style.flexDirection='column';
+}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('hidden');
+}
+
+function newT(){tid='t'+Date.now();document.getElementById('mh').innerHTML='';goHome();renderList();}
+function loadT(id){tid=id;document.getElementById('mh').innerHTML='';var t=gt(id);if(t&&t.messages&&t.messages.length){goChat();t.messages.forEach(function(m){addMsg(m.role,m.text,false);});}else{goHome();}renderList();}
+
+// MESSAGES
+function addMsg(role,txt,anim,stream){
+  if(anim!==false)goChat();
+  var w=document.createElement('div');
+  w.className='msg '+role;
+  var b=document.createElement('div');
+  b.className='bubble';
+  w.appendChild(b);
+  document.getElementById('mh').appendChild(w);
+
+  if(stream && role==='ai'){
+    var i=0;
+    function typeW(){
+      if(window.stopStream) {
+        window.resetSendButtons();
+        return;
+      }
+      if(i<txt.length){
+        b.textContent += txt.substring(i, i+3);
+        i+=3;
+        scroll();
+        setTimeout(typeW, 10);
+      } else {
+        window.resetSendButtons();
+      }
+    }
+    typeW();
+  } else {
+    b.textContent=txt;
+    scroll();
+  }
+}
+function scroll(){var h=document.getElementById('mh');setTimeout(function(){h.scrollTop=h.scrollHeight;},10);}
+function ecrd(fetching){var w=document.createElement('div');w.className='msg ai';var d=document.createElement('div');d.className='ecrd';d.innerHTML='<img src="https://img.icons8.com/color/512/gmail-new.png" style="width:16px;height:16px;object-fit:contain"/><span>Email List</span><span class="ebadge">'+(fetching?'Fetching...':'Complete ✓')+'</span>';w.appendChild(d);document.getElementById('mh').appendChild(w);scroll();return w;}
+var typEl=null;
+function typ(on){if(on){if(typEl)return;typEl=document.createElement('div');typEl.className='msg ai';typEl.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';document.getElementById('mh').appendChild(typEl);scroll();}else{if(typEl){typEl.remove();typEl=null;}}}
+
+function clean(t){return t.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*\*(.*?)\*\*\*/g,'$1').replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/^\*\s+/gm,'• ').replace(/\*/g,'').replace(/^#{1,6}\s+/gm,'').replace(/`([^`]*)`/g,'$1').replace(/^[-]\s+/gm,'• ').replace(/\n{3,}/g,'\n\n').trim();}
+
+function isGmail(t){var x=t.toLowerCase();return x.includes('email')||x.includes('gmail')||x.includes('inbox')||x.includes('unread')||x.includes('mail')&&!x.includes('email address');}
+function gmailAction(t){var x=t.toLowerCase();if(x.includes('unread'))return 'unread';if(x.includes('recent')||x.includes('old')||x.includes('puran')||x.includes('all'))return 'readAll';return 'readEmails';}
+
+async function readGmail(action){
+  try{
+    if(!getPTk()) return 'Error: Google Access Token missing. Kripya pehle Gmail dubara Connect karein, shayad session expire ho gaya hai.';
+    var myTk = getPTk();
+    
+    var q='';
+    if(action==='unread') q='is:unread';
+    if(action==='readEmails') q='newer_than:1d';
+    
+    // 1. Fetch Message IDs directly from Google 
+    var r1=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=5&q='+encodeURIComponent(q), {headers:{'Authorization':'Bearer '+myTk}});
+    var d1=await r1.json();
+    if(d1.error) return 'Error (Google API): '+d1.error.message;
+    if(!d1.messages || d1.messages.length===0) return 'No new emails.';
+    
+    // 2. Fetch Details for each message
+    var out='Context: Fetched ' + d1.messages.length + ' emails DIRECTLY using official Google API OAuth.\n\n';
+    for(var i=0; i<d1.messages.length; i++){
+       var r2 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+d1.messages[i].id+'?format=full', {headers:{'Authorization':'Bearer '+myTk}});
+       var d2 = await r2.json();
+       var headers = d2.payload.headers;
+       var subject = (headers.find(h=>h.name.toLowerCase()==='subject')||{}).value||'No Subject';
+       var from = (headers.find(h=>h.name.toLowerCase()==='from')||{}).value||'Unknown';
+       var date = (headers.find(h=>h.name.toLowerCase()==='date')||{}).value||'';
+       out += 'Email '+(i+1)+':\nFrom: '+from+'\nSubject: '+subject+'\nTime: '+date+'\nSnippet preview: '+d2.snippet+'\n\n';
+    }
+    return out;
+  }catch(e){return 'Error: '+e.message;}
+}
+
+window.currentAbortController = null;
+window.isStreaming = false;
+window.stopStream = false;
+
+function setStopButtons(){
+  window.isStreaming = true; window.stopStream = false;
+  var svStop = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>';
+  var s1=document.getElementById('sb'), s2=document.getElementById('sb2');
+  if(s1){ s1.innerHTML=svStop; s1.classList.add('active'); }
+  if(s2){ s2.innerHTML=svStop; s2.classList.add('active'); }
+}
+
+function resetSendButtons(){
+  window.isStreaming = false; 
+  var s1=document.getElementById('sb'), s2=document.getElementById('sb2');
+  if(s1){ s1.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'; s1.classList.remove('active'); if(document.getElementById('ci').value.trim())s1.classList.add('active'); }
+  if(s2){ s2.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>'; s2.classList.remove('active'); if(document.getElementById('ci2').value.trim())s2.classList.add('active'); }
+}
+
+function handleStop(){
+  if(!window.isStreaming) return false;
+  window.stopStream = true;
+  if(window.currentAbortController) window.currentAbortController.abort();
+  typ(false);
+  resetSendButtons();
+  return true;
+}
+
+function getModel(){var m=document.getElementById('ms2')||document.getElementById('ms');return m?m.value:'gemini';}
+function getInput(){var ci=document.getElementById('ci2');if(ci&&ci.value.trim())return ci;return document.getElementById('ci');}
+
+async function doSend(text){
+  if(!text)return;
+  addMsg('user',text);push('user',text);
+  var inp=getInput();inp.value='';inp.style.height='auto';
+  
+  window.currentAbortController = new AbortController();
+  setStopButtons();
+  
+  var msgs=[];
+  if(isGmail(text)){
+    var card=ecrd(true);
+    if(!isConnected()){card.remove();addMsg('ai','Gmail connect nahi kiya. Pehle "Connect" pe click karo.');return;}
+    var rawMails=await readGmail(gmailAction(text));
+    card.remove();ecrd(false);
+    
+    typ(true);
+    var t=gt(tid);
+    
+    if(rawMails.includes('No new emails.') || rawMails.includes('Error:')){
+       msgs.push({role:'system',content:'System update: You attempted to fetch the user emails, but the system returned: "' + rawMails + '". Apologize conversationally and answer their question or guide them.'});
+    } else {
+       msgs.push({role:'system',content:'You are an intelligent assistant. Interpret the following raw fetched emails and summarize them for the user conversationally. Tell them what is happening right now in their email based on these previews. If they asked a specific question, answer it based on this data. Format smartly using bullet points and emojis to make it easy to read as a concise overview. Here is the raw email data:\n' + rawMails});
+    }
+    
+    if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
+  } else {
+    typ(true);
+    var t=gt(tid);
+    msgs.push({role:'system',content:'You are Flowlet AI, a helpful intelligent assistant.'});
+    if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
+  }
+
+  // DIRECT OPENROUTER CALL: No login required (Bypassing Supabase Security)
+  const opKey = "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";
+  fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    signal: window.currentAbortController.signal,
+    headers: {
+      'Authorization': 'Bearer ' + opKey,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.href,
+      'X-Title': 'Flowlet AI Dashboard'
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.0-flash-lite-001",
+      messages: msgs
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(window.stopStream) return;
+    typ(false);
+    var rep = d.error ? 'Error: ' + (d.error.message || d.error) : (d.choices && d.choices[0] && d.choices[0].message) ? clean(d.choices[0].message.content) : JSON.stringify(d);
+    addMsg('ai', rep, true, true);
+    push('ai', rep);
+  })
+  .catch(function(e){
+    if(e.name === 'AbortError') return;
+    typ(false); addMsg('ai','Error: ' + e.message);
+    resetSendButtons();
+  });
+}
+
+function send(){ if(handleStop()) return; var t=document.getElementById('ci').value.trim();if(!t)return;doSend(t); }
+function send2(){ if(handleStop()) return; var t=document.getElementById('ci2').value.trim();if(!t)return;doSend(t); }
+function go(t){document.getElementById('ci').value=t;doSend(t);}
+
+// Input binding
+function bindInput(id,sbId){var el=document.getElementById(id),sb=document.getElementById(sbId);if(!el)return;el.addEventListener('input',function(){this.style.height='auto';this.style.height=this.scrollHeight+'px';if(sb){if(this.value.trim()){sb.style.display='flex';sb.classList.add('active');}else{sb.classList.remove('active');}}});el.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();id==='ci'?send():send2();}});}
+bindInput('ci','sb');
+bindInput('ci2','sb2');
+
+document.getElementById('ncBtn').onclick=newT;
+document.getElementById('ncib').onclick=newT;
+
+// CHAT MENU LOGIC
+var activeChatMenuId = null;
+function showChatMenu(e, id) {
+  e.stopPropagation();
+  var menu = document.getElementById('chat-menu-popup');
+  activeChatMenuId = id;
+  menu.style.display = 'flex';
+  var rect = e.currentTarget.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 5) + 'px';
+  menu.style.left = (rect.right - 140) + 'px';
+}
+function delActiveMenu() {
+  if (activeChatMenuId) { deleteT(activeChatMenuId); document.getElementById('chat-menu-popup').style.display = 'none'; activeChatMenuId = null; }
+}
+document.addEventListener('click', function() {
+  var menu = document.getElementById('chat-menu-popup');
+  if(menu) menu.style.display = 'none';
+});
+
+// BOOT
+renderList();
+newT(); // Always show Home dashboard at startup
+updateGUI(isConnected());
+
+// CHECK SUPABASE AUTH
+(async function() {
+    const authButtons = document.getElementById('authButtons');
+    const userProfile = document.getElementById('userProfile');
+    
+    if (!window.supabaseClient) {
+        console.error("No Supabase client found");
+        return;
+    }
+    try {
+        const { data: { session }, error: sessionError } = await window.supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        
+        const activeUser = session?.user;
+        const userEmail = activeUser?.email;
+        
+        if (userEmail) {
+            if (authButtons) authButtons.style.display = 'none';
+            if (userProfile) userProfile.style.display = 'flex';
+            
+            const emailDisplay = document.getElementById('userEmailDisplay');
+            if (emailDisplay) emailDisplay.textContent = userEmail.split('@')[0];
+            const initialDisplay = document.getElementById('userInitial');
+            if (initialDisplay) {
+                initialDisplay.textContent = userEmail.charAt(0).toUpperCase();
+                let hash = 0;
+                for (let i = 0; i < userEmail.length; i++) {
+                    hash = userEmail.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                initialDisplay.style.backgroundColor = 'hsl(' + (hash % 360) + ', 70%, 80%)';
+                initialDisplay.style.color = '#1f2937';
+            }
+        } else {
+            console.warn("Session found but no userEmail present");
+        }
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async function() {
+                if (confirm("Are you sure you want to log out?")) {
+                    await window.supabaseClient.auth.signOut();
+                    window.location.reload();
+                }
+            });
+        }
+    } catch (e) { 
+        console.error("Auth check failed:", e);
+    }
+})();
+</script>
+<div id="chat-menu-popup" class="chat-menu" onclick="event.stopPropagation()">
+  <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.68V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3v4.68a2 2 0 0 1-1.11 1.87l-1.78.89A2 2 0 0 0 5 15.24Z"></path></svg> Pin</button>
+  <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Rename</button>
+  <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg> Archive</button>
+  <button class="danger" onclick="delActiveMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Delete</button>
+</div>
+</body>
+</html>

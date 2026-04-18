@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Flowlet AI is a premium, seamlessly integrated AI workspace. Automate your Gmail, manage your calendar, and execute intelligent prompt templates with a state-of-the-art assistant designed to boost your productivity and boundless creativity."/>
+<title>Login - Flowlet.ai</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --tx:#111827;--mu:#6b7280;--mu2:#9ca3af;
+  --b1:#e5e7eb;--b2:#d1d5db;
+  --f:'Inter',sans-serif;
+}
+body{
+  font-family:var(--f);
+  color:var(--tx);
+  height:100vh;
+  display:flex;
+  overflow:hidden;
+  background:#fff;
+}
+
+/* ── LEFT PANEL (Form) ── */
+.left-p{
+  width:50%;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  padding:40px;
+}
+.logo-icon{
+  position:absolute;
+  top:32px;
+  left:32px;
+}
+
+.frm-wrap{
+  width:100%;
+  max-width:380px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.pre-head{
+  font-size:14px;
+  font-weight:500;
+  color:var(--tx);
+  margin-bottom:8px;
+}
+.title{
+  font-size:32px;
+  font-weight:600;
+  letter-spacing:-0.03em;
+  margin-bottom:32px;
+}
+
+.inp-grp{width:100%;margin-bottom:16px;}
+.inp{
+  width:100%;
+  padding:14px 16px;
+  font-size:15px;
+  font-family:var(--f);
+  border:1px solid var(--b2);
+  border-radius:10px;
+  outline:none;
+  transition:.2s;
+}
+.inp:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15);}
+.inp::placeholder{color:var(--mu2);}
+
+.btn-blk{
+  width:100%;
+  padding:14px;
+  background:var(--tx);
+  color:#fff;
+  font-size:15px;
+  font-weight:500;
+  font-family:var(--f);
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.15s;
+  margin-bottom:16px;
+}
+.btn-blk:hover{background:#000;}
+
+.al-txt{
+  font-size:14px;
+  color:var(--mu);
+  margin-bottom:24px;
+}
+.al-txt a{color:var(--tx);font-weight:500;text-decoration:none}
+.al-txt a:hover{text-decoration:underline}
+
+.or-div{
+  display:flex;
+  align-items:center;
+  width:100%;
+  margin-bottom:24px;
+}
+.or-div::before,.or-div::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--b1);
+}
+.or-txt{
+  padding:0 12px;
+  font-size:12px;
+  font-weight:500;
+  color:var(--mu2);
+}
+
+.btn-g{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px;
+  background:#fff;
+  border:1px solid var(--b2);
+  border-radius:10px;
+  font-size:15px;
+  font-weight:500;
+  font-family:var(--f);
+  color:var(--tx);
+  cursor:pointer;
+  transition:.15s;
+}
+.btn-g:hover{background:#f9fafb;}
+.btn-g img{width:18px;height:18px;}
+
+
+/* ── RIGHT PANEL (Features) ── */
+.right-p{
+  width:50%;
+  /* Soft colorful mesh gradient similar to screenshot */
+  background: radial-gradient(circle at 10% 10%, #fed7aa 0%, transparent 40%),
+              radial-gradient(circle at 90% 10%, #ffedd5 0%, transparent 40%),
+              radial-gradient(circle at 50% 90%, #fff7ed 0%, transparent 50%);
+  background-color: #fafafa;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px 80px;
+}
+.r-inner{
+  max-width:480px;
+  margin:0 auto;
+}
+.r-title{
+  font-size:36px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:-0.03em;
+  margin-bottom:32px;
+  color:var(--tx);
+}
+.feat-sub{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:16px;
+  color:var(--tx);
+}
+.feat-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin-bottom:80px;
+}
+.feat-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  font-size:15px;
+  color:var(--mu);
+  line-height:1.5;
+}
+.feat-item svg{
+  flex-shrink:0;
+  margin-top:2px;
+  color:var(--tx);
+}
+
+.trust-blk{
+  text-align:center;
+}
+.tr-txt{
+  font-size:12px;
+  color:var(--mu2);
+  margin-bottom:24px;
+}
+.logos{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:32px;
+  opacity:0.8;
+  flex-wrap:wrap;
+}
+.l-item{
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:-0.02em;
+  color:var(--tx);
+}
+
+@media (max-width: 900px) {
+  body{flex-direction:column;overflow-y:auto}
+  .left-p,.right-p{width:100%;min-height:100vh;}
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL (Form) -->
+<div class="left-p">
+  <div class="logo-icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C12 7.5 7.5 12 0 12C7.5 12 12 16.5 12 24C12 16.5 16.5 12 24 12C16.5 12 12 7.5 12 0Z"/></svg>
+  </div>
+
+  <div class="frm-wrap">
+    <div class="pre-head">Free 30-day trial</div>
+    <h1 class="title" id="authTitle">Flowlet.ai</h1>
+
+    <form id="authForm" style="width:100%;">
+      <div id="authErrorMessage" style="display:none;background:#fff5f5;color:#e53e3e;padding:12px;border:1px solid #feb2b2;border-radius:8px;font-size:13px;margin-bottom:16px;"></div>
+      <div class="inp-grp">
+        <input type="email" id="emailInput" class="inp" placeholder="Email address" required />
+      </div>
+      <div class="inp-grp">
+        <input type="password" id="passwordInput" class="inp" placeholder="Password" required />
+      </div>
+      <button type="submit" id="continueBtn" class="btn-blk">Continue</button>
+    </form>
+
+    <div class="al-txt" id="toggleModeText">
+      Already have an account? <a href="#" id="toggleModeLink">Log in</a>
+    </div>
+
+    <div class="or-div">
+      <span class="or-txt">OR</span>
+    </div>
+
+    <button type="button" class="btn-g" id="googleLoginBtn" onclick="window.triggerGoogleLogin()">
+      <img src="https://img.icons8.com/color/512/google-logo.png" alt="Google" />
+      Continue with Google
+    </button>
+  </div>
+</div>
+
+<!-- RIGHT PANEL (Features) -->
+<div class="right-p">
+  <div class="r-inner">
+    <h2 class="r-title">Help your team move faster with advanced AI</h2>
+    
+    <div class="feat-sub">Top features</div>
+    <ul class="feat-list">
+      <li class="feat-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        No training on your data; SAML security
+      </li>
+      <li class="feat-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Advanced access to our best model for work
+      </li>
+      <li class="feat-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Integrate with Google Drive & other tools
+      </li>
+      <li class="feat-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Easy member, role, & billing management
+      </li>
+    </ul>
+
+    <div class="trust-blk">
+      <div class="tr-txt">Trusted by thousands of teams like</div>
+      <div class="logos">
+        <div class="l-item" style="font-family:sans-serif;text-transform:lowercase;font-weight:800;">duolingo</div>
+        <div class="l-item" style="font-family:serif;font-weight:bold;">IDEO</div>
+        <div class="l-item" style="text-transform:uppercase;font-style:italic;">STRAVA</div>
+        <div class="l-item" style="font-family:cursive;font-size:18px;">Canva</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase CDN and Authentication Logic -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  alert("New code loaded properly!");
+  // Initialize Supabase with existing project keys from script.js
+  const supabaseUrl = 'https://oesauhpxumthgardzeym.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lc2F1aHB4dW10aGdhcmR6ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjczNjgsImV4cCI6MjA4OTA0MzM2OH0.SOH5_DjSeWShbZGg3PJwz7IykTxuacAx6211QWOO-8M';
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const authForm = document.getElementById('authForm');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const continueBtn = document.getElementById('continueBtn');
+    const toggleModeText = document.getElementById('toggleModeText');
+    const authTitle = document.getElementById('authTitle');
+    const authErrorMessage = document.getElementById('authErrorMessage');
+    const googleLoginBtn = document.getElementById('googleLoginBtn');
+    
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        // Redirect to dashboard immediately if already authenticated
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    let isSignUpMode = false;
+
+    // Delegate event listener for toggling mode to handle dynamically created links
+    toggleModeText.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'toggleModeLink') {
+        e.preventDefault();
+        isSignUpMode = !isSignUpMode;
+        
+        if (isSignUpMode) {
+          authTitle.textContent = 'Create an account';
+          continueBtn.textContent = 'Sign up';
+          toggleModeText.innerHTML = 'Already have an account? <a href="#" id="toggleModeLink">Log in</a>';
+        } else {
+          authTitle.textContent = 'Welcome back';
+          continueBtn.textContent = 'Continue';
+          toggleModeText.innerHTML = 'Don\\'t have an account? <a href="#" id="toggleModeLink">Sign up</a>';
+        }
+      }
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authErrorMessage.style.display = 'none';
+      
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      const originalText = continueBtn.innerText;
+      continueBtn.innerText = isSignUpMode ? 'Creating account...' : 'Logging in...';
+      continueBtn.disabled = true;
+
+      try {
+        let authResult;
+        if (isSignUpMode) {
+          authResult = await supabase.auth.signUp({ email, password });
+          
+          if (authResult.data && authResult.data.user && !authResult.data.session) {
+            authErrorMessage.textContent = 'Signup successful! Please confirm your email address to log in.';
+            authErrorMessage.style.display = 'block';
+            authErrorMessage.style.backgroundColor = '#d1fae5';
+            authErrorMessage.style.color = '#065f46';
+            authErrorMessage.style.borderColor = '#6ee7b7';
+            return;
+          }
+        } else {
+          authResult = await supabase.auth.signInWithPassword({ email, password });
+        }
+
+        const { data, error } = authResult;
+        if (error) throw error;
+        
+        // Successful login, redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        const isInvalidCreds = error.message.includes('Invalid login credentials');
+        authErrorMessage.textContent = isInvalidCreds ? 'Incorrect email or password.' : error.message;
+        authErrorMessage.style.display = 'block';
+        authErrorMessage.style.backgroundColor = '#fff5f5';
+        authErrorMessage.style.color = '#e53e3e';
+        authErrorMessage.style.borderColor = '#feb2b2';
+      } finally {
+        if (!authErrorMessage.textContent.includes('confirm your email')) {
+          continueBtn.innerText = originalText;
+          continueBtn.disabled = false;
+        }
+      }
+    });
+
+    // Define global Google Login function
+    window.triggerGoogleLogin = async () => {
+      alert('Global trigger function firing! Starting Google Login...');
+      try {
+        let redirectToUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/dashboard.html';
+        
+        alert('Redirect URL set to: ' + redirectToUrl);
+
+        if (window.location.protocol === 'file:') {
+          alert("FYI: Google OAuth via file:// protocol might face issues with redirects. A local server is recommended.");
+        }
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectToUrl,
+            queryParams: { prompt: 'consent' }
+          }
+        });
+        
+        if (error) throw error;
+        alert('Supabase function called successfully, waiting for Google redirect...');
+      } catch (error) {
+        alert('Google Login Error: ' + error.message);
+      }
+    };
+
+  });
+</script>
+</body>
+</html>
