@@ -771,7 +771,13 @@ async function doSend(text){
   }
 
   // DIRECT OPENROUTER CALL: No login required (Bypassing Supabase Security)
-  const opKey = "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";
+  const opKey = ""; // Please put your API key here 
+  
+  var selectedModelName = "google/gemini-2.0-flash-lite-001";
+  var msel = getModel();
+  if (msel === 'claude') selectedModelName = "anthropic/claude-3.5-sonnet";
+  if (msel === 'search') selectedModelName = "perplexity/llama-3.1-sonar-small-128k-online";
+
   fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     signal: window.currentAbortController.signal,
@@ -782,7 +788,7 @@ async function doSend(text){
       'X-Title': 'Flowlet AI Dashboard'
     },
     body: JSON.stringify({
-      model: "google/gemini-2.0-flash-lite-001",
+      model: selectedModelName,
       messages: msgs
     })
   })
