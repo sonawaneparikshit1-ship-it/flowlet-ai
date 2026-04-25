@@ -561,7 +561,7 @@ async function connectGmail(){
   }
   
   var s = document.getElementById('gst'); 
-  s.textContent = 'Opening Google Auth...';
+  if(s) s.textContent = 'Opening Google Auth...';
 
   // CUSTOM SUPABASE POPUP: Slashy AI Style!
   const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
@@ -574,7 +574,8 @@ async function connectGmail(){
   });
 
   if (error) {
-     s.textContent = "Supabase Error: " + error.message;
+     if(s) s.textContent = "Supabase Error: " + error.message;
+     console.error(error);
      return;
   }
 
@@ -588,11 +589,11 @@ async function connectGmail(){
           clearInterval(timer);
           // 2 seconds wait for storage sync
           setTimeout(() => {
-             if (isConnected()) {
-                updateGUI(true);
-             } else {
-                s.textContent = 'Google Auth cancelled or failed.';
-             }
+              if (isConnected()) {
+                 updateGUI(true);
+              } else {
+                 if(s) s.textContent = 'Google Auth cancelled or failed.';
+              }
           }, 1000);
        }
      }, 1000);
@@ -642,7 +643,7 @@ function updateGUI(c) {
         if(cBtn){ cBtn.textContent='Connect'; cBtn.className='int-btn'; }
       } 
     }).catch(e => {
-      s.textContent = "Fail: " + e.message;
+      if(s) s.textContent = "Fail: " + e.message;
     });
   } catch(err) {
     if(s) s.textContent = "Fatal: " + err.message;
@@ -982,6 +983,7 @@ updateGUI(isConnected());
     <div class="modal-header" style="border-bottom:none; padding-bottom: 0;">
       <div>
         <h2 style="font-size:22px;">Add Integrations</h2>
+        <div id="gst" style="font-size:12px; color:var(--mu); margin-top:4px;">Ready to connect</div>
       </div>
       <button class="modal-close" onclick="closeConnectionsModal()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
