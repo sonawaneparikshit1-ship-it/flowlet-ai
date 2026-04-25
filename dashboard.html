@@ -749,7 +749,7 @@ function typ(on){if(on){if(typEl)return;typEl=document.createElement('div');typE
 function clean(t){return t.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*\*(.*?)\*\*\*/g,'$1').replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/^\*\s+/gm,'• ').replace(/\*/g,'').replace(/^#{1,6}\s+/gm,'').replace(/`([^`]*)`/g,'$1').replace(/^[-]\s+/gm,'• ').replace(/\n{3,}/g,'\n\n').trim();}
 
 function isGmail(t){var x=t.toLowerCase();return x.includes('email')||x.includes('gmail')||x.includes('inbox')||x.includes('unread')||x.includes('mail')&&!x.includes('email address');}
-function gmailAction(t){var x=t.toLowerCase();if(x.includes('unread'))return 'unread';if(x.includes('recent')||x.includes('old')||x.includes('puran')||x.includes('all'))return 'readAll';return 'readEmails';}
+function gmailAction(t){var x=t.toLowerCase();if(x.includes('unread'))return 'unread';if(x.includes('recent')||x.includes('old')||x.includes('puran')||x.includes('all')||x.includes('apr')||x.includes('date')||x.includes('pichle')||x.includes('back')||x.includes('history'))return 'readAll';return 'readEmails';}
 
 async function readGmail(action){
   try{
@@ -758,24 +758,33 @@ async function readGmail(action){
     
     var q='';
     if(action==='unread') q='is:unread';
-    if(action==='readEmails') q='newer_than:1d';
+    else if(action==='readAll') q=''; // Full history!
+    else q='newer_than:30d'; // 1 month default instead of 7 days
     
-    // 1. Fetch Message IDs directly from Google 
-    var r1=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=5&q='+encodeURIComponent(q), {headers:{'Authorization':'Bearer '+myTk}});
+    // 1. Fetch Message IDs directly from Google (Increasing results to 30 for depth)
+    var r1=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q='+encodeURIComponent(q), {headers:{'Authorization':'Bearer '+myTk}});
     var d1=await r1.json();
     if(d1.error) return 'Error (Google API): '+d1.error.message;
     if(!d1.messages || d1.messages.length===0) return 'No new emails.';
     
-    // 2. Fetch Details for each message
-    var out='Context: Fetched ' + d1.messages.length + ' emails DIRECTLY using official Google API OAuth.\n\n';
+    // 2. Fetch Details for each message and format as a Table
+    var out = `| # | From | Date | Subject | Preview |\n|---|---|---|---|---|\n`;
     for(var i=0; i<d1.messages.length; i++){
-       var r2 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+d1.messages[i].id+'?format=full', {headers:{'Authorization':'Bearer '+myTk}});
-       var d2 = await r2.json();
-       var headers = d2.payload.headers;
-       var subject = (headers.find(h=>h.name.toLowerCase()==='subject')||{}).value||'No Subject';
-       var from = (headers.find(h=>h.name.toLowerCase()==='from')||{}).value||'Unknown';
-       var date = (headers.find(h=>h.name.toLowerCase()==='date')||{}).value||'';
-       out += 'Email '+(i+1)+':\nFrom: '+from+'\nSubject: '+subject+'\nTime: '+date+'\nSnippet preview: '+d2.snippet+'\n\n';
+       try {
+         var r2 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+d1.messages[i].id+'?format=full', {headers:{'Authorization':'Bearer '+myTk}});
+         var d2 = await r2.json();
+         var headers = d2.payload.headers;
+         var subject = (headers.find(h=>h.name.toLowerCase()==='subject')||{}).value||'No Subject';
+         var from = (headers.find(h=>h.name.toLowerCase()==='from')||{}).value||'Unknown';
+         var date = (headers.find(h=>h.name.toLowerCase()==='date')||{}).value||'';
+         
+         // Clean strings for table
+         var cleanSub = subject.replace(/\|/g, '-');
+         var cleanFrom = from.replace(/\|/g, '-');
+         var cleanSnippet = d2.snippet.replace(/\|/g, '-').substring(0, 100);
+         
+         out += `| ${i+1} | ${cleanFrom} | ${date} | ${cleanSub} | ${cleanSnippet}... |\n`;
+       } catch(ee) {}
     }
     return out;
   }catch(e){return 'Error: '+e.message;}
@@ -833,7 +842,7 @@ async function doSend(text){
     if(rawMails.includes('No new emails.') || rawMails.includes('Error:')){
        msgs.push({role:'system',content:'System update: You attempted to fetch the user emails, but the system returned: "' + rawMails + '". Apologize conversationally and answer their question or guide them.'});
     } else {
-       msgs.push({role:'system',content:'You are an intelligent assistant. Interpret the following raw fetched emails and summarize them for the user conversationally. Tell them what is happening right now in their email based on these previews. If they asked a specific question, answer it based on this data. Format smartly using bullet points and emojis to make it easy to read as a concise overview. Here is the raw email data:\n' + rawMails});
+       msgs.push({role:'system',content:'You are an Email Manager. I have provided a MARKDOWN TABLE of the user emails below. You MUST show this table to the user. Do not shorten it significantly. If the user asked for specific dates (like April 17/19), highlight those rows. Be helpful and professional. Here is the table data:\n\n' + rawMails});
     }
     
     if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
