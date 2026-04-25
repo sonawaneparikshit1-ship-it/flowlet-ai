@@ -746,7 +746,12 @@ function ecrd(fetching){var w=document.createElement('div');w.className='msg ai'
 var typEl=null;
 function typ(on){if(on){if(typEl)return;typEl=document.createElement('div');typEl.className='msg ai';typEl.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';document.getElementById('mh').appendChild(typEl);scroll();}else{if(typEl){typEl.remove();typEl=null;}}}
 
-function clean(t){return t.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*\*(.*?)\*\*\*/g,'$1').replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/^\*\s+/gm,'• ').replace(/\*/g,'').replace(/^#{1,6}\s+/gm,'').replace(/`([^`]*)`/g,'$1').replace(/^[-]\s+/gm,'• ').replace(/\n{3,}/g,'\n\n').trim();}
+function clean(t){
+  // Only remove deep thought tags and extra line breaks, preserve Markdown!
+  return t.replace(/<think>[\s\S]*?<\/think>/gi,'')
+          .replace(/\n{3,}/g,'\n\n')
+          .trim();
+}
 
 function isGmail(t){var x=t.toLowerCase();return x.includes('email')||x.includes('gmail')||x.includes('inbox')||x.includes('unread')||x.includes('mail')&&!x.includes('email address');}
 function gmailAction(t){var x=t.toLowerCase();if(x.includes('unread'))return 'unread';if(x.includes('recent')||x.includes('old')||x.includes('puran')||x.includes('all')||x.includes('apr')||x.includes('date')||x.includes('pichle')||x.includes('back')||x.includes('history'))return 'readAll';return 'readEmails';}
@@ -821,8 +826,8 @@ async function readGmail(action){
     if(d1.error) return 'Error (Google API): '+d1.error.message;
     if(!d1.messages || d1.messages.length===0) return 'No new emails.';
     
-    // 2. Fetch Details for each message and format as a Table
-    var out = `| # | From | Date | Subject | Preview |\n|---|---|---|---|---|\n`;
+    // 2. Fetch Details for each message and format with SPACING (Slashy Style)
+    var out = '';
     for(var i=0; i<d1.messages.length; i++){
        try {
          var r2 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+d1.messages[i].id+'?format=full', {headers:{'Authorization':'Bearer '+myTk}});
@@ -832,12 +837,7 @@ async function readGmail(action){
          var from = (headers.find(h=>h.name.toLowerCase()==='from')||{}).value||'Unknown';
          var date = (headers.find(h=>h.name.toLowerCase()==='date')||{}).value||'';
          
-         // Clean strings for table
-         var cleanSub = subject.replace(/\|/g, '-');
-         var cleanFrom = from.replace(/\|/g, '-');
-         var cleanSnippet = d2.snippet.replace(/\|/g, '-').substring(0, 100);
-         
-         out += `| ${i+1} | ${cleanFrom} | ${date} | ${cleanSub} | ${cleanSnippet}... |\n`;
+         out += `---EMAIL_START---\nSENDER: ${from}\nDATE: ${date}\nSUBJECT: ${subject}\nPREVIEW: ${d2.snippet}\n---EMAIL_END---\n\n`;
        } catch(ee) {}
     }
     return out;
@@ -896,7 +896,7 @@ async function doSend(text){
     if(rawMails.includes('No new emails.') || rawMails.includes('Error:')){
        msgs.push({role:'system',content:'System update: You attempted to fetch the user emails, but the system returned: "' + rawMails + '". Apologize conversationally and answer their question or guide them.'});
     } else {
-       msgs.push({role:'system',content:'You are an Email Manager. I have provided a MARKDOWN TABLE of the user emails below. You MUST show this table to the user. Do not shorten it significantly. If the user asked for specific dates (like April 17/19), highlight those rows. Be helpful and professional. Here is the table data:\n\n' + rawMails});
+       msgs.push({role:'system',content:'You are a Premium Email Assistant (Slashy Style). Use a clean, spaced-out layout with bold headers and emojis. DO NOT use tables. For each email, create a clear section with double line breaks. Highlight the SENDER and SUBJECT in bold. Make it look professional and readable. Here is the raw data:\n\n' + rawMails});
     }
     
     if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
