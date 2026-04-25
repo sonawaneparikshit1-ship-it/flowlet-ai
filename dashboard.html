@@ -751,6 +751,60 @@ function clean(t){return t.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\
 function isGmail(t){var x=t.toLowerCase();return x.includes('email')||x.includes('gmail')||x.includes('inbox')||x.includes('unread')||x.includes('mail')&&!x.includes('email address');}
 function gmailAction(t){var x=t.toLowerCase();if(x.includes('unread'))return 'unread';if(x.includes('recent')||x.includes('old')||x.includes('puran')||x.includes('all')||x.includes('apr')||x.includes('date')||x.includes('pichle')||x.includes('back')||x.includes('history'))return 'readAll';return 'readEmails';}
 
+function isCalendar(t){var x=t.toLowerCase();return x.includes('calendar')||x.includes('meeting')||x.includes('event')||x.includes('appointment')||x.includes('schedule')||x.includes('calander');}
+
+async function manageCalendar(text){
+  try{
+    var myTk = getPTk();
+    if(!myTk) return 'Error: Google Token missing.';
+    
+    var x = text.toLowerCase();
+    // 1. Reading Calendar
+    if(x.includes('check') || x.includes('show') || x.includes('list') || x.includes('schedule')){
+       var r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=10&timeMin='+(new Date().toISOString()), {headers:{'Authorization':'Bearer '+myTk}});
+       var d = await r.json();
+       if(!d.items || d.items.length===0) return 'No upcoming events found.';
+       var out = 'Upcoming Events:\n';
+       d.items.forEach(ev => { out += `- ${ev.summary} (${ev.start.dateTime || ev.start.date})\n`; });
+       return out;
+    }
+    
+    // 2. Creating Event (Very simple heuristic)
+    var summary = text.replace(/set|a|meeting|at|for|schedule|event|calendar/gi, '').trim();
+    if(!summary) summary = 'New Meeting';
+    
+    // Heuristic for time: 2pm -> 14:00
+    var now = new Date();
+    var start = new Date();
+    var timeMatch = text.match(/(\d+)\s*(am|pm)/i);
+    if(timeMatch){
+       var hr = parseInt(timeMatch[1]);
+       if(timeMatch[2].toLowerCase()==='pm' && hr < 12) hr += 12;
+       if(timeMatch[2].toLowerCase()==='am' && hr === 12) hr = 0;
+       start.setHours(hr, 0, 0, 0);
+    } else {
+       start.setHours(now.getHours() + 1, 0, 0, 0); // Default to next hour
+    }
+    
+    var end = new Date(start.getTime() + 60*60*1000); // 1 hour duration
+    
+    var evObj = {
+      'summary': summary,
+      'start': { 'dateTime': start.toISOString() },
+      'end': { 'dateTime': end.toISOString() }
+    };
+    
+    var r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+       method: 'POST',
+       headers: { 'Authorization': 'Bearer '+myTk, 'Content-Type': 'application/json' },
+       body: JSON.stringify(evObj)
+    });
+    var d = await r.json();
+    if(d.id) return 'Success: Meeting "'+summary+'" set for '+start.toLocaleString();
+    return 'Error creating event: ' + (d.error ? d.error.message : 'Unknown error');
+  }catch(e){return 'Error: '+e.message;}
+}
+
 async function readGmail(action){
   try{
     if(!getPTk()) return 'Error: Google Access Token missing. Kripya pehle Gmail dubara Connect karein, shayad session expire ho gaya hai.';
@@ -845,6 +899,16 @@ async function doSend(text){
        msgs.push({role:'system',content:'You are an Email Manager. I have provided a MARKDOWN TABLE of the user emails below. You MUST show this table to the user. Do not shorten it significantly. If the user asked for specific dates (like April 17/19), highlight those rows. Be helpful and professional. Here is the table data:\n\n' + rawMails});
     }
     
+    if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
+  } else if(isCalendar(text)){
+    var card=ecrd(true);
+    if(!isConnected()){card.remove();addMsg('ai','Calendar connect nahi kiya. Pehle "Connect" pe click karo.');return;}
+    var rawCal=await manageCalendar(text);
+    card.remove();ecrd(false);
+    
+    typ(true);
+    var t=gt(tid);
+    msgs.push({role:'system',content:'You are a Calendar Assistant. The user wants to manage their Google Calendar. Result of operation: ' + rawCal + '\nTell the user conversationally if the meeting was set or list their upcoming events. Current date/time: ' + new Date().toLocaleString()});
     if(t&&t.messages)t.messages.forEach(function(m){msgs.push({role:m.role==='ai'?'assistant':'user',content:m.text});});
   } else {
     typ(true);
