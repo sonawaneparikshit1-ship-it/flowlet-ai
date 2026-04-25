@@ -567,9 +567,9 @@ async function connectGmail(){
   const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
      provider: 'google',
      options: {
-       // Maangi hui Permissions: Gmail padhne ke liye, Calendar dekhne aur Events banane ke liye
        scopes: 'https://mail.google.com/ https://www.googleapis.com/auth/calendar',
-       skipBrowserRedirect: true // SUPER IMPORTANT: Do not move away from Dashboard!
+       redirectTo: window.location.origin + window.location.pathname, // Ensure it comes back to our Vercel domain!
+       skipBrowserRedirect: true
      }
   });
 
@@ -587,14 +587,14 @@ async function connectGmail(){
      var timer = setInterval(function(){
        if(!popup || popup.closed) {
           clearInterval(timer);
-          // 2 seconds wait for storage sync
+          // Wait longer for Vercel domain redirect to finish and storage to sync
           setTimeout(() => {
-              if (isConnected()) {
-                 updateGUI(true);
-              } else {
-                 if(s) s.textContent = 'Google Auth cancelled or failed.';
-              }
-          }, 1000);
+             if (isConnected()) {
+                updateGUI(true);
+             } else {
+                if(s) s.textContent = 'Google Auth failed. Make sure to allow popups and check Vercel domain settings in Supabase.';
+             }
+          }, 2000);
        }
      }, 1000);
   }
