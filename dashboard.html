@@ -2269,18 +2269,19 @@
       }
 
       try {
-        // Call our local backend API instead of direct Composio to avoid CORS issues
         const response = await fetch('/api/composio-init', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers: { 'Content-Type': 'application/json' }
         });
         
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error('Server Error (' + response.status + '): ' + errText);
+        }
+
         const data = await response.json();
         if (data.redirectUrl) {
           window.open(data.redirectUrl, 'ComposioAuth', 'width=600,height=700');
-          // Success flow
           localStorage.setItem('gmail_composio_connected', 'true');
           window.isGlobalGmailConnected = true;
           updateGUI(true);
@@ -2289,7 +2290,7 @@
         }
       } catch (e) {
         console.error('Connection Error:', e);
-        alert('Failed to connect: ' + e.message + '\n\nPlease make sure you are running on a server that supports /api routes (like Vercel).');
+        alert('Failed to connect: ' + e.message + '\n\nTip: Agar aap localhost par hain, toh "vercel dev" se run karein taaki /api routes kaam karein.');
       }
     }
 
