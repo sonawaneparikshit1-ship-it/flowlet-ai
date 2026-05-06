@@ -399,7 +399,7 @@
     }
 
     #home {
-      background-image: radial-gradient(circle at 0% 0%, rgba(255, 122, 89, 0.08), transparent 45%);
+      background-image: linear-gradient(to bottom, rgba(255, 122, 89, 0.04) 0%, transparent 25%);
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -1998,7 +1998,7 @@
       const adv = document.getElementById('advanced-dashboard');
       if (home) {
         home.style.display = 'flex';
-        home.style.backgroundImage = 'radial-gradient(circle at 0% 0%, rgba(255, 122, 89, 0.08), transparent 45%)';
+        home.style.backgroundImage = 'linear-gradient(to bottom, rgba(255, 122, 89, 0.04) 0%, transparent 25%)';
       }
       if (chat) chat.style.display = 'none';
       if (adv) adv.style.display = 'none';
@@ -2257,29 +2257,26 @@
         if (st) { st.textContent = 'Ready to connect'; st.style.color = 'var(--mu)'; }
       }
     }
-    var COMPOSIO_API_KEY = 'ak_gJOctsSY3CwQQDuA7Zx0';
-    window.isGlobalGmailConnected = !!localStorage.getItem('gmail_composio_connected');
+    window.isGlobalGmailConnected = !!localStorage.getItem('gmail_pipedream_connected');
 
     async function connectGmail() {
       if (window.isGlobalGmailConnected) {
-        localStorage.removeItem('gmail_composio_connected');
+        localStorage.removeItem('gmail_pipedream_connected');
         window.isGlobalGmailConnected = false;
         updateGUI(false);
         return;
       }
 
-      // If backend is failing, we use the direct initiate URL if we can construct it, 
-      // or we just tell the user to use the magic link.
-      // For now, let's try the direct Composio Hosted flow approach.
-      const directUrl = `https://app.composio.ai/apps/gmail/setup?api_key=${COMPOSIO_API_KEY}`;
-      window.open(directUrl, 'ComposioAuth', 'width=800,height=800');
+      // Using Pipedream Connect Link as requested
+      const pipedreamUrl = 'https://pipedream.com/_static/connect.html?token=ctok_1a22e2aa6ea9579bf482f52a52a15755&connectLink=true&app=gmail';
+      window.open(pipedreamUrl, 'PipedreamAuth', 'width=600,height=700');
       
-      // Assume success for UI feedback
-      localStorage.setItem('gmail_composio_connected', 'true');
+      // Update UI state
+      localStorage.setItem('gmail_pipedream_connected', 'true');
       window.isGlobalGmailConnected = true;
       updateGUI(true);
       
-      alert('Gmail connection window opened. Please login there to complete setup.');
+      alert('Pipedream Gmail connection window opened.');
     }
 
     // ── SLACK OAUTH CONFIG ──
