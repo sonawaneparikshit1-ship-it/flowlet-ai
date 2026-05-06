@@ -6,7 +6,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta name="description"
     content="Flowlet AI is a premium, seamlessly integrated AI workspace. Automate your Gmail, manage your calendar, and execute intelligent prompt templates with a state-of-the-art assistant designed to boost your productivity and boundless creativity." />
-  <title>Flowlet AI</title>
+  <title>Dashboard - Flowlet AI</title>
+  <script 
+    async 
+    data-clerk-publishable-key="pk_test_YWNlLXdhaG9vLTM2LmNsZXJrLmFjY291bnRzLmRldiQ" 
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" 
+    type="text/javascript">
+  </script>
   <!-- SUPABASE AUTH GUARD & GOOGLE IDENTITY SERVICES -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -1615,9 +1621,7 @@
           up</button>
       </div>
       <div id="userProfile" style="display:none;gap:10px;align-items:center;font-family:var(--f);">
-        <div id="userInitial"
-          style="width:28px;height:28px;border-radius:50%;background:#e5e7eb;color:#111;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">
-          G</div>
+        <div id="user-button"></div>
         <span id="userEmailDisplay" style="font-size:13px;color:var(--mu2);font-weight:500;">Guest</span>
         <button id="logoutBtn"
           style="background:transparent;border:1px solid #ef4444;color:#ef4444;font-weight:500;font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;margin-left:8px;transition:0.15s;"
@@ -2911,16 +2915,7 @@
 
           const emailDisplay = document.getElementById('userEmailDisplay');
           if (emailDisplay) emailDisplay.textContent = userEmail.split('@')[0];
-          const initialDisplay = document.getElementById('userInitial');
-          if (initialDisplay) {
-            initialDisplay.textContent = userEmail.charAt(0).toUpperCase();
-            let hash = 0;
-            for (let i = 0; i < userEmail.length; i++) {
-              hash = userEmail.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            initialDisplay.style.backgroundColor = 'hsl(' + (hash % 360) + ', 70%, 80%)';
-            initialDisplay.style.color = '#1f2937';
-          }
+          
           // Auto-open dashboard if logged in
           openAdvancedDashboard();
         } else {
@@ -3331,5 +3326,39 @@
       to { opacity: 1; transform: scale(1); }
     }
   </style>
+  <script>
+    window.addEventListener('load', async function () {
+      if (!window.Clerk) return;
+      await Clerk.load();
+
+      if (Clerk.user) {
+        const userButtonEl = document.getElementById('user-button');
+        if (userButtonEl) {
+          Clerk.mountUserButton(userButtonEl, {
+            appearance: {
+              elements: {
+                userButtonAvatarBox: {
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  border: '1px solid #e5e7eb'
+                }
+              }
+            }
+          });
+        }
+      } else {
+        // Redirect to login or open sign in
+        Clerk.openSignIn({
+          afterSignInUrl: window.location.href,
+          appearance: {
+            variables: {
+              colorPrimary: '#ff7a59'
+            }
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
