@@ -1545,13 +1545,13 @@
         padding: 20px;
       }
     }
-    .blue-powder {
+    .orange-powder {
       position: absolute;
       top: -30px;
-      left: -150px;
+      left: -30px;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 75%);
+      background: radial-gradient(circle, rgba(255, 122, 89, 0.25) 0%, transparent 75%);
       z-index: 1;
       pointer-events: none;
       filter: blur(40px);
@@ -1648,7 +1648,7 @@
     <div id="home">
       <!-- LANDING PAGE SECTION -->
       <div class="home-inner" id="landing-page" style="margin-top: 4vh;">
-        <div class="blue-powder"></div>
+        <div class="orange-powder"></div>
         <div class="trust-pill">Trusted by 5,000+ sales and RevOps teams</div>
         <h1 class="home-title" id="main-title">Automate any sales workflow with AI</h1>
         <p class="home-subtitle" id="main-subtitle" style="margin-bottom: 32px;">Find customers, enrich them with the best data, and build revenue<br>workflows that actually survive real-world complexity</p>
@@ -2443,9 +2443,13 @@
 
     window.isGlobalHubSpotConnected = !!localStorage.getItem('hubspot_access_token');
 
-    // ── NOTION OAUTH CONFIG ──
+    // \u2744 NOTION OAUTH CONFIG \u2744
     var NOTION_CLIENT_ID = '359d872b-594c-8132-83dc-0037f3d7055f';
     window.isGlobalNotionConnected = !!localStorage.getItem('notion_access_token');
+
+    // \u2744 DISCORD OAUTH CONFIG \u2744
+    var DISCORD_CLIENT_ID = '1501815569513713775';
+    window.isGlobalDiscordConnected = !!localStorage.getItem('discord_access_token');
 
     window.connectNotion = function() {
       if (window.isGlobalNotionConnected) {
@@ -2489,12 +2493,16 @@
         } else if (state === 'flowlet_notion') {
           window.history.replaceState({}, document.title, cleanUrl);
           exchangeNotionCode(code);
+        } else if (state === 'flowlet_discord') {
+          window.history.replaceState({}, document.title, cleanUrl);
+          exchangeDiscordCode(code);
         }
       }
       
       if (window.isGlobalHubSpotConnected) setTimeout(updateHubSpotUI, 500);
       if (window.isGlobalSFConnected) setTimeout(updateSFUI, 500);
       if (window.isGlobalNotionConnected) setTimeout(updateNotionUI, 500);
+      if (window.isGlobalDiscordConnected) setTimeout(updateDiscordUI, 500);
     })();
 
     async function exchangeNotionCode(code) {
@@ -2520,7 +2528,6 @@
     }
 
     function updateNotionUI() {
-      // Basic update for the pill in advanced dashboard
       var pill = document.getElementById('notion-pill');
       var pillText = document.getElementById('notion-pill-text');
       if (pill) {
@@ -2528,6 +2535,123 @@
         pill.style.borderColor = '#bbf7d0';
         pill.style.color = '#16a34a';
         if (pillText) pillText.textContent = 'Connected \u2713';
+      }
+      
+      var sidebarText = document.getElementById('notion-sidebar-text');
+      if (sidebarText) sidebarText.textContent = 'Notion Connected \u2713';
+      
+      var sidebarBtn = document.getElementById('notion-sidebar-btn');
+      if (sidebarBtn) {
+        sidebarBtn.style.background = '#f0fdf4';
+        sidebarBtn.style.borderColor = '#bbf7d0';
+        sidebarBtn.style.color = '#16a34a';
+      }
+    }
+
+    function updateNotionDisconnectUI() {
+      var pill = document.getElementById('notion-pill');
+      var txt = document.getElementById('notion-pill-text');
+      if (pill) {
+        pill.style.background = '';
+        pill.style.borderColor = '';
+        pill.style.color = '';
+      }
+      if (txt) txt.textContent = 'Connect Notion';
+
+      var sidebarText = document.getElementById('notion-sidebar-text');
+      if (sidebarText) sidebarText.textContent = 'Connect Notion';
+      
+      var sidebarBtn = document.getElementById('notion-sidebar-btn');
+      if (sidebarBtn) {
+        sidebarBtn.style.background = '';
+        sidebarBtn.style.borderColor = '';
+        sidebarBtn.style.color = '';
+      }
+    }
+
+    window.connectDiscord = function() {
+      if (window.isGlobalDiscordConnected) {
+        localStorage.removeItem('discord_access_token');
+        window.isGlobalDiscordConnected = false;
+        alert('Discord Disconnected');
+        updateDiscordDisconnectUI();
+        return;
+      }
+      var redirectUri = encodeURIComponent('https://flowlet-ai-murex.vercel.app/');
+      var discordAuthUrl = 'https://discord.com/api/oauth2/authorize'
+        + '?client_id=' + DISCORD_CLIENT_ID
+        + '&redirect_uri=' + redirectUri
+        + '&response_type=code'
+        + '&scope=identify%20email%20guilds'
+        + '&state=flowlet_discord';
+
+      var w = 500, h = 680;
+      var left = Math.round(screen.width / 2 - w / 2);
+      var top = Math.round(screen.height / 2 - h / 2);
+      window.open(discordAuthUrl, 'DiscordAuth', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
+    }
+
+    async function exchangeDiscordCode(code) {
+      try {
+        var resp = await fetch('/api/discord-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        });
+        var data = await resp.json();
+        if (data.access_token) {
+          localStorage.setItem('discord_access_token', data.access_token);
+          window.isGlobalDiscordConnected = true;
+          updateDiscordUI();
+          alert('Discord Connected Successfully! ✓');
+        } else {
+          console.error('Discord exchange failed:', data);
+          alert('Discord connection failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (e) {
+        console.error('Discord exchange error:', e);
+      }
+    }
+
+    function updateDiscordUI() {
+      var pill = document.getElementById('discord-pill');
+      var txt = document.getElementById('discord-pill-text');
+      if (pill) {
+        pill.style.background = '#f0fdf4';
+        pill.style.borderColor = '#bbf7d0';
+        pill.style.color = '#16a34a';
+      }
+      if (txt) txt.textContent = 'Discord Connected \u2713';
+
+      var sidebarText = document.getElementById('discord-sidebar-text');
+      if (sidebarText) sidebarText.textContent = 'Discord Connected \u2713';
+      
+      var sidebarBtn = document.getElementById('discord-sidebar-btn');
+      if (sidebarBtn) {
+        sidebarBtn.style.background = '#f0fdf4';
+        sidebarBtn.style.borderColor = '#bbf7d0';
+        sidebarBtn.style.color = '#16a34a';
+      }
+    }
+
+    function updateDiscordDisconnectUI() {
+      var pill = document.getElementById('discord-pill');
+      var txt = document.getElementById('discord-pill-text');
+      if (pill) {
+        pill.style.background = '';
+        pill.style.borderColor = '';
+        pill.style.color = '';
+      }
+      if (txt) txt.textContent = 'Connect Discord';
+
+      var sidebarText = document.getElementById('discord-sidebar-text');
+      if (sidebarText) sidebarText.textContent = 'Connect Discord';
+      
+      var sidebarBtn = document.getElementById('discord-sidebar-btn');
+      if (sidebarBtn) {
+        sidebarBtn.style.background = '';
+        sidebarBtn.style.borderColor = '';
+        sidebarBtn.style.color = '';
       }
     }
 
@@ -3277,11 +3401,22 @@
                 <img src="https://www.google.com/s2/favicons?domain=attio.com&sz=64" width="22" height="22">
               </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
+            <div id="notion-sidebar-btn" onclick="connectNotion()" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
+              <span id="notion-sidebar-text" style="font-size: 13px; font-weight: 600;">Connect Notion</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="22" height="22">
+            </div>
+
+            <div id="discord-sidebar-btn" onclick="connectDiscord()" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
+              <span id="discord-sidebar-text" style="font-size: 13px; font-weight: 600;">Connect Discord</span>
+              <img src="https://img.icons8.com/color/48/discord-logo.png" width="22" height="22">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
               <span style="font-size: 13px; font-weight: 600;">Add integration</span>
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="22" height="22" onclick="connectNotion(); event.stopPropagation();" title="Connect Notion" style="cursor:pointer">
-                <img src="https://img.icons8.com/color/48/gmail-new.png" width="22" height="22" onclick="connectComposioGmail(); event.stopPropagation();" title="Connect Gmail" style="cursor:pointer">
+              <div style="display: flex; gap: 8px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="20" height="20" onclick="connectNotion(); event.stopPropagation();" title="Connect Notion" style="cursor:pointer">
+                <img src="https://img.icons8.com/color/48/discord-logo.png" width="20" height="20" onclick="connectDiscord(); event.stopPropagation();" title="Connect Discord" style="cursor:pointer">
+                <img src="https://img.icons8.com/color/48/gmail-new.png" width="20" height="20" onclick="connectComposioGmail(); event.stopPropagation();" title="Connect Gmail" style="cursor:pointer">
               </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
