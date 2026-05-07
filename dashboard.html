@@ -616,8 +616,8 @@
     }
 
     .adv-pill img {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
 
     .adv-sheets-sec {
@@ -842,7 +842,7 @@
       height: 22px;
       border-radius: 6px;
       background: var(--s2);
-      border: 2px solid var(--s1);
+      border: 1px solid var(--s1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1490,8 +1490,8 @@
     }
 
     .int-icon {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
       object-fit: contain;
       flex-shrink: 0;
     }
@@ -1703,9 +1703,9 @@
             </span>
             <span id="hubspot-pill-text">Connect HubSpot</span>
           </div>
-          <div class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="connectGmail()">
+          <div class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="connectComposioGmail()">
             <img src="https://img.icons8.com/color/48/gmail-new.png" width="18" height="18" alt="Gmail">
-            Connect Gmail
+            Connect via Composio
           </div>
           <div id="slack-pill" class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="connectSlack()">
             <img src="https://img.icons8.com/color/48/slack-new.png" width="18" height="18" alt="Slack">
@@ -1815,55 +1815,8 @@
       }
     }, 500);
 
-    async function connectGmail() {
-      if (isConnected()) {
-        localStorage.removeItem('vg_ptk');
-        localStorage.removeItem('sb-oesauhpxumthgardzeym-auth-token');
-        window.isGlobalGmailConnected = '';
-        updateGUI(false);
-        try { await window.supabaseClient.auth.signOut(); } catch (e) { }
-        return;
-      }
-
-      var s = document.getElementById('gst');
-      if (s) s.textContent = 'Opening Google Auth...';
-
-      // CUSTOM SUPABASE POPUP: Slashy AI Style!
-      const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          scopes: 'https://mail.google.com/ https://www.googleapis.com/auth/calendar',
-          redirectTo: window.location.origin + window.location.pathname, // Ensure it comes back to our Vercel domain!
-          skipBrowserRedirect: true
-        }
-      });
-
-      if (error) {
-        if (s) s.textContent = "Supabase Error: " + error.message;
-        console.error(error);
-        return;
-      }
-
-      if (data && data.url) {
-        var w = 520, h = 600;
-        var popup = window.open(data.url, "GoogleAuth", "width=" + w + ",height=" + h + ",top=" + (screen.height / 2 - h / 2) + ",left=" + (screen.width / 2 - w / 2));
-
-        // Nazar rekhenge kab popup band hoga
-        var timer = setInterval(function () {
-          if (!popup || popup.closed) {
-            clearInterval(timer);
-            // Wait longer for Vercel domain redirect to finish and storage to sync
-            setTimeout(() => {
-              if (isConnected()) {
-                updateGUI(true);
-              } else {
-                if (s) s.textContent = 'Google Auth failed. Make sure to allow popups and check Vercel domain settings in Supabase.';
-              }
-            }, 2000);
-          }
-        }, 1000);
-      }
-    }
+    // Version: Composio_v2_Fixed
+    console.log("Flowlet AI: Composio Integration Loaded");
 
     function openConnectionsModal() {
       document.getElementById('connections-modal').style.display = 'flex';
@@ -2079,7 +2032,7 @@
       b.appendChild(actWrap);
     }
     function scroll() { var h = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-scroll-area') : document.getElementById('mh'); if (!h) return; setTimeout(function () { h.scrollTop = h.scrollHeight; }, 10); }
-    function ecrd(fetching) { var w = document.createElement('div'); w.className = 'msg ai'; var d = document.createElement('div'); d.className = 'ecrd'; d.innerHTML = '<img src="https://img.icons8.com/color/512/gmail-new.png" style="width:16px;height:16px;object-fit:contain"/><span>Email List</span><span class="ebadge">' + (fetching ? 'Fetching...' : 'Complete ✓') + '</span>'; w.appendChild(d); var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(w); scroll(); return w; }
+    function ecrd(fetching) { var w = document.createElement('div'); w.className = 'msg ai'; var d = document.createElement('div'); d.className = 'ecrd'; d.innerHTML = '<img src="https://img.icons8.com/color/512/gmail-new.png" style="width:14px;height:14px;object-fit:contain"/><span>Email List</span><span class="ebadge">' + (fetching ? 'Fetching...' : 'Complete ✓') + '</span>'; w.appendChild(d); var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(w); scroll(); return w; }
     var typEl = null;
     function typ(on) { if (on) { if (typEl) return; typEl = document.createElement('div'); typEl.className = 'msg ai'; typEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>'; var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(typEl); scroll(); } else { if (typEl) { typEl.remove(); typEl = null; } } }
 
@@ -2154,37 +2107,52 @@
 
     async function readGmail(action) {
       try {
-        if (!getPTk()) return 'Error: Google Access Token missing. Kripya pehle Gmail dubara Connect karein, shayad session expire ho gaya hai.';
-        var myTk = getPTk();
+        var accountId = localStorage.getItem('gmail_composio_account_id') || COMPOSIO_ACCOUNT_ID;
 
         var q = '';
         if (action === 'unread') q = 'is:unread';
-        else if (action === 'readAll') q = ''; // Full history!
-        else q = 'newer_than:30d'; // 1 month default instead of 7 days
+        else if (action === 'readAll') q = '';
+        else q = 'newer_than:30d';
 
-        // 1. Fetch Message IDs directly from Google (Increasing results to 30 for depth)
-        var r1 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=' + encodeURIComponent(q), { headers: { 'Authorization': 'Bearer ' + myTk } });
-        var d1 = await r1.json();
-        if (d1.error) return 'Error (Google API): ' + d1.error.message;
-        if (!d1.messages || d1.messages.length === 0) return 'No new emails.';
+        // Use Composio to execute GMAIL_LIST_THREADS action
+        var response = await fetch('https://backend.composio.dev/api/v2/actions/GMAIL_LIST_THREADS/execute', {
+          method: 'POST',
+          headers: {
+            'x-api-key': COMPOSIO_API_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            connectedAccountId: accountId,
+            input: {
+              query: q,
+              max_results: 20
+            }
+          })
+        });
 
-        // 2. Fetch Details for each message and format with SPACING (Slashy Style)
+        var data = await response.json();
+        console.log('Composio readGmail:', data);
+
+        if (!data || data.error) return 'Error fetching emails: ' + (data.error || JSON.stringify(data));
+
+        var threads = (data.data && data.data.threads) || data.threads || [];
+        if (!threads.length) return 'No emails found.';
+
         var out = '';
-        for (var i = 0; i < d1.messages.length; i++) {
-          try {
-            var r2 = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/' + d1.messages[i].id + '?format=full', { headers: { 'Authorization': 'Bearer ' + myTk } });
-            var d2 = await r2.json();
-            var headers = d2.payload.headers;
-            var subject = (headers.find(h => h.name.toLowerCase() === 'subject') || {}).value || 'No Subject';
-            var from = (headers.find(h => h.name.toLowerCase() === 'from') || {}).value || 'Unknown';
-            var date = (headers.find(h => h.name.toLowerCase() === 'date') || {}).value || '';
+        threads.forEach(function(t) {
+          var msg = t.messages ? t.messages[0] : t;
+          var hdrs = (msg && msg.payload && msg.payload.headers) || [];
+          var subject = (hdrs.find(h => h.name.toLowerCase() === 'subject') || {}).value || 'No Subject';
+          var from = (hdrs.find(h => h.name.toLowerCase() === 'from') || {}).value || 'Unknown';
+          var date = (hdrs.find(h => h.name.toLowerCase() === 'date') || {}).value || '';
+          var snippet = msg.snippet || '';
+          out += `---EMAIL_START---\nSENDER: ${from}\nDATE: ${date}\nSUBJECT: ${subject}\nPREVIEW: ${snippet}\n---EMAIL_END---\n\n`;
+        });
 
-            out += `---EMAIL_START---\nSENDER: ${from}\nDATE: ${date}\nSUBJECT: ${subject}\nPREVIEW: ${d2.snippet}\n---EMAIL_END---\n\n`;
-          } catch (ee) { }
-        }
-        return out;
+        return out || 'No emails found.';
       } catch (e) { return 'Error: ' + e.message; }
     }
+
 
     window.currentAbortController = null;
     window.isStreaming = false;
@@ -2215,7 +2183,7 @@
       return true;
     }
 
-    function isConnected() { return !!localStorage.getItem('vg_ptk'); }
+    function isConnected() { return !!localStorage.getItem('gmail_composio_connected') || !!localStorage.getItem('vg_ptk'); }
     function getPTk() { return localStorage.getItem('vg_ptk'); }
     function openConnectionsModal() { document.getElementById('connections-modal').style.display = 'flex'; }
     function closeConnectionsModal() { document.getElementById('connections-modal').style.display = 'none'; }
@@ -2225,32 +2193,104 @@
         if (gBtn) { gBtn.textContent = 'Disconnect'; gBtn.className = 'int-dis'; }
         if (cBtn) { cBtn.textContent = 'Disconnect'; cBtn.className = 'int-dis'; }
         if (st) { st.textContent = 'Connected ✓'; st.style.color = '#16a34a'; }
+        // Update all Gmail pills on dashboard
+        document.querySelectorAll('[onclick="connectComposioGmail()"]').forEach(function(pill) {
+          pill.style.background = '#f0fdf4';
+          pill.style.borderColor = '#bbf7d0';
+          pill.style.color = '#16a34a';
+          if (pill.childNodes.length > 0) {
+            for (var n of pill.childNodes) {
+              if (n.nodeType === 3 && n.textContent.trim()) {
+                n.textContent = ' Gmail Connected ✓';
+              }
+            }
+          }
+        });
       } else {
         if (gBtn) { gBtn.textContent = 'Connect'; gBtn.className = 'int-btn'; }
         if (cBtn) { cBtn.textContent = 'Connect'; cBtn.className = 'int-btn'; }
         if (st) { st.textContent = 'Ready to connect'; st.style.color = 'var(--mu)'; }
+        // Reset Gmail pills
+        document.querySelectorAll('[onclick="connectComposioGmail()"]').forEach(function(pill) {
+          pill.style.background = '';
+          pill.style.borderColor = '';
+          pill.style.color = '';
+          if (pill.childNodes.length > 0) {
+            for (var n of pill.childNodes) {
+              if (n.nodeType === 3 && n.textContent.trim()) {
+                n.textContent = ' Connect via Composio';
+              }
+            }
+          }
+        });
       }
     }
-    window.isGlobalGmailConnected = !!localStorage.getItem('gmail_pipedream_connected');
+    // ── COMPOSIO GMAIL CONFIG ──
+    var COMPOSIO_API_KEY = 'ak_gJOctsSY3CwQQDuA7Zx0';
+    var COMPOSIO_ACCOUNT_ID = 'ca_3_lJFfp4xCNT';
 
-    async function connectGmail() {
+    window.isGlobalGmailConnected = !!localStorage.getItem('gmail_composio_connected');
+    if (window.isGlobalGmailConnected) {
+      document.addEventListener('DOMContentLoaded', function() { updateGUI(true); });
+      if (document.readyState !== 'loading') { updateGUI(true); }
+    }
+
+    async function connectComposioGmail() {
+      console.log("Initiating Composio Gmail Connection...");
       if (window.isGlobalGmailConnected) {
-        localStorage.removeItem('gmail_pipedream_connected');
+        // Disconnect
+        localStorage.removeItem('gmail_composio_connected');
+        localStorage.removeItem('gmail_composio_account_id');
         window.isGlobalGmailConnected = false;
         updateGUI(false);
         return;
       }
 
-      // Using Pipedream Connect Link as requested
-      const pipedreamUrl = 'https://pipedream.com/_static/connect.html?token=ctok_176277eb2c543fd1a143ce3f0b54e5bb&connectLink=true&app=gmail';
-      window.open(pipedreamUrl, 'PipedreamAuth', 'width=600,height=700');
-      
-      // Update UI state
-      localStorage.setItem('gmail_pipedream_connected', 'true');
-      window.isGlobalGmailConnected = true;
-      updateGUI(true);
-      
-      alert('Pipedream Gmail connection window opened.');
+      try {
+        // Use a CORS proxy to bypass browser restrictions for local development
+        const targetUrl = 'https://api.composio.ai/v1/entities/default/integrations/gmail/initiate';
+        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
+        
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: {
+            'x-api-key': COMPOSIO_API_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            redirectUrl: window.location.href
+          })
+        });
+
+        const data = await response.json();
+        console.log('Composio Initiate Response:', data);
+
+        if (!data.redirectUrl) {
+          throw new Error(data.message || 'No redirect URL returned from Composio');
+        }
+
+        var composioUrl = data.redirectUrl;
+        var w = 500, h = 680;
+        var left = Math.round(screen.width / 2 - w / 2);
+        var top = Math.round(screen.height / 2 - h / 2);
+        var popup = window.open(composioUrl, 'ComposioAuth', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
+
+        // Watch for popup to close
+        var timer = setInterval(function() {
+          if (!popup || popup.closed) {
+            clearInterval(timer);
+            // Mark as connected after popup closes
+            localStorage.setItem('gmail_composio_connected', 'true');
+            // If data.connectedAccountId exists, use it, else fallback to default
+            localStorage.setItem('gmail_composio_account_id', data.connectedAccountId || COMPOSIO_ACCOUNT_ID);
+            window.isGlobalGmailConnected = true;
+            updateGUI(true);
+          }
+        }, 800);
+      } catch (err) {
+        console.error('Composio Connection Error:', err);
+        alert('Failed to initiate connection: ' + err.message);
+      }
     }
 
     // ── SLACK OAUTH CONFIG ──
@@ -2403,6 +2443,30 @@
 
     window.isGlobalHubSpotConnected = !!localStorage.getItem('hubspot_access_token');
 
+    // ── NOTION OAUTH CONFIG ──
+    var NOTION_CLIENT_ID = '359d872b-594c-8132-83dc-0037f3d7055f';
+    window.isGlobalNotionConnected = !!localStorage.getItem('notion_access_token');
+
+    window.connectNotion = function() {
+      if (window.isGlobalNotionConnected) {
+        localStorage.removeItem('notion_access_token');
+        window.isGlobalNotionConnected = false;
+        alert('Notion Disconnected');
+        return;
+      }
+      var redirectUri = encodeURIComponent('https://flowlet-ai-murex.vercel.app/');
+      var notionAuthUrl = 'https://api.notion.com/v1/oauth/authorize'
+        + '?client_id=' + NOTION_CLIENT_ID
+        + '&response_type=code&owner=user'
+        + '&redirect_uri=' + redirectUri
+        + '&state=flowlet_notion';
+
+      var w = 500, h = 680;
+      var left = Math.round(screen.width / 2 - w / 2);
+      var top = Math.round(screen.height / 2 - h / 2);
+      window.open(notionAuthUrl, 'NotionAuth', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
+    }
+
     // ── SALESFORCE OAUTH CONFIG ──
     var SF_CLIENT_ID = '3MVG9...'; // Placeholder - User must provide their Connected App Consumer Key
     var SF_SCOPES = 'full api refresh_token';
@@ -2422,12 +2486,50 @@
         } else if (state === 'flowlet_salesforce') {
           window.history.replaceState({}, document.title, cleanUrl);
           exchangeSFCode(code);
+        } else if (state === 'flowlet_notion') {
+          window.history.replaceState({}, document.title, cleanUrl);
+          exchangeNotionCode(code);
         }
       }
       
       if (window.isGlobalHubSpotConnected) setTimeout(updateHubSpotUI, 500);
       if (window.isGlobalSFConnected) setTimeout(updateSFUI, 500);
+      if (window.isGlobalNotionConnected) setTimeout(updateNotionUI, 500);
     })();
+
+    async function exchangeNotionCode(code) {
+      try {
+        var resp = await fetch('/api/notion-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        });
+        var data = await resp.json();
+        if (data.access_token) {
+          localStorage.setItem('notion_access_token', data.access_token);
+          window.isGlobalNotionConnected = true;
+          updateNotionUI();
+          alert('Notion Connected Successfully!');
+        } else {
+          console.error('Notion exchange failed:', data);
+          alert('Notion connection failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (e) {
+        console.error('Notion exchange error:', e);
+      }
+    }
+
+    function updateNotionUI() {
+      // Basic update for the pill in advanced dashboard
+      var pill = document.getElementById('notion-pill');
+      var pillText = document.getElementById('notion-pill-text');
+      if (pill) {
+        pill.style.background = '#f0fdf4';
+        pill.style.borderColor = '#bbf7d0';
+        pill.style.color = '#16a34a';
+        if (pillText) pillText.textContent = 'Connected \u2713';
+      }
+    }
 
     async function exchangeHubSpotCode(code) {
       updateHubSpotLoadingUI();
@@ -2552,14 +2654,14 @@
       var pill = document.getElementById('salesforce-pill');
       if (pill) {
         pill.style.pointerEvents = 'none';
-        pill.innerHTML = '<span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;"><div class="dots" style="padding:0;gap:3px;"><span style="width:4px;height:4px;background:#00a1e0"></span><span style="width:4px;height:4px;background:#00a1e0;opacity:0.6"></span><span style="width:4px;height:4px;background:#00a1e0;opacity:0.3"></span></div></span><div><div style="font-size: 14px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 12px; color: #6b7280;">Connecting...</div></div>';
+        pill.innerHTML = '<span style="background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid #e5e7eb; flex-shrink: 0;"><div class="dots" style="padding:0;gap:2px;"><span style="width:3px;height:3px;background:#00a1e0"></span><span style="width:3px;height:3px;background:#00a1e0;opacity:0.6"></span><span style="width:3px;height:3px;background:#00a1e0;opacity:0.3"></span></div></span><div><div style="font-size: 13px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 11px; color: #6b7280;">Connecting...</div></div>';
       }
     }
 
     function updateSFUI() {
       var pill = document.getElementById('salesforce-pill');
       if (pill) {
-        pill.innerHTML = '<span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;"><img src="https://img.icons8.com/color/48/salesforce.png" width="24" height="24"></span><div><div style="font-size: 14px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 12px; color: #16a34a; font-weight: 500;">Connected ✓</div></div>';
+        pill.innerHTML = '<span style="background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid #e5e7eb; flex-shrink: 0;"><img src="https://img.icons8.com/color/48/salesforce.png" width="18" height="18"></span><div><div style="font-size: 13px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 11px; color: #16a34a; font-weight: 500;">Connected ✓</div></div>';
         pill.style.background = '#f0fdf4';
         pill.style.borderColor = '#bbf7d0';
         pill.style.pointerEvents = 'auto';
@@ -2571,7 +2673,7 @@
       window.isGlobalSFConnected = false;
       localStorage.removeItem('sf_access_token');
       if (pill) {
-        pill.innerHTML = '<span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;"><img src="https://img.icons8.com/color/48/salesforce.png" width="24" height="24"></span><div><div style="font-size: 14px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 12px; color: #6b7280;">CRM and sales automation</div></div>';
+        pill.innerHTML = '<span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #e5e7eb; flex-shrink: 0;"><img src="https://img.icons8.com/color/48/salesforce.png" width="18" height="18"></span><div><div style="font-size: 14px; font-weight: 600; color: #111;">Salesforce</div><div style="font-size: 12px; color: #6b7280;">CRM and sales automation</div></div>';
         pill.style.background = 'transparent';
         pill.style.borderColor = 'transparent';
         pill.style.pointerEvents = 'auto';
@@ -2941,7 +3043,7 @@
           <div class="int-row">
             <div class="int-left"><img src="https://img.icons8.com/color/48/gmail-new.png" class="int-icon"><span
                 class="int-name">Gmail</span></div>
-            <button id="m-g-btn" class="int-btn" onclick="connectGmail()">Connect</button>
+            <button id="m-g-btn" class="int-btn" onclick="connectComposioGmail()">Connect</button>
           </div>
           <div class="int-row">
             <div class="int-left"><img src="https://img.icons8.com/color/48/google-sheets.png" class="int-icon"><span
@@ -2975,7 +3077,7 @@
           <div class="int-row">
             <div class="int-left"><img src="https://img.icons8.com/color/48/google-calendar--v2.png"
                 class="int-icon"><span class="int-name">Google Calendar</span></div>
-            <button id="m-c-btn" class="int-btn" onclick="connectGmail()">Connect</button>
+            <button id="m-c-btn" class="int-btn" onclick="connectComposioGmail()">Connect</button>
           </div>
           <div class="int-row">
             <div class="int-left"><img src="https://img.icons8.com/color/48/google-drive--v2.png" class="int-icon"><span
@@ -3166,26 +3268,24 @@
           </div>
           <div style="padding: 12px 16px 12px 16px; display: flex; flex-direction: column; gap: 8px;">
             <div id="slack-sidebar-btn" onclick="connectSlack()" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; cursor: pointer; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span id="slack-sidebar-text" style="font-size: 11px; font-weight: 500;">Connect Slack</span> <img src="https://img.icons8.com/color/48/slack-new.png" width="22" height="22">
+              <span id="slack-sidebar-text" style="font-size: 13px; font-weight: 500;">Connect Slack</span> <img src="https://img.icons8.com/color/48/slack-new.png" width="22" height="22">
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';" onclick="openCRMModal()">
-              <span style="font-size: 11px; font-weight: 500;">Connect CRM</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.back              <span style="font-size: 13px; font-weight: 500;">Connect CRM</span>
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span style="background: white; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FF7A59%22%20d%3D%22M123.6%20390.5a72.5%2072.5%200%200%201-5.7-28.7c0-39.7%2032.2-72%2072-72a72.1%2072.1%200%200%201%2021.6%203.3L324.5%20180c-2.4-5.6-3.8-11.7-3.8-18.1%200-25.3%2020.5-45.9%2045.9-45.9s45.9%2020.5%2045.9%2045.9-20.5%2045.9-45.9%2045.9a46.1%2046.1%200%200%201-13.7-2.1L240.2%20318.5c2.4%205.6%203.8%2011.7%203.8%2018.1%200%2025.3-20.5%2045.9-45.9%2045.9s-45.9-20.5-45.9-45.9a46.1%2046.1%200%200%201%202.1-13.7L50.7%20219.2a46.1%2046.1%200%200%201-4.8%201.1C20.5%20220.3%200%20199.8%200%20174.4S20.5%20128.5%2045.9%20128.5s45.9%2020.5%2045.9%2045.9a46.1%2046.1%200%200%201-3.3%2017.2l128.2%20128.2a72.1%2072.1%200%200%201%2039.3-11.8c39.7%200%2072%2032.2%2072%2072s-32.2%2072-72%2072c-39.7%200-72-32.2-72-72%200-11.7%202.8-22.8%207.7-32.5L123.6%20390.5z%22%2F%3E%3C%2Fsvg%3E" width="22" height="22" style="transform: rotate(-90deg);"></span>
                 <img src="https://img.icons8.com/color/48/salesforce.png" width="24" height="24">
                 <img src="https://www.google.com/s2/favicons?domain=attio.com&sz=64" width="22" height="22">
               </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span style="font-size: 11px; font-weight: 500;">Add integration</span>
-              <div style="display: flex; gap: 8px;">
-                <img src="https://img.icons8.com/color/48/google-drive--v2.png" width="20" height="20">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                <img src="https://img.icons8.com/color/48/gmail-new.png" width="20" height="20">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
+              <span style="font-size: 13px; font-weight: 600;">Add integration</span>
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="22" height="22" onclick="connectNotion(); event.stopPropagation();" title="Connect Notion" style="cursor:pointer">
+                <img src="https://img.icons8.com/color/48/gmail-new.png" width="22" height="22" onclick="connectComposioGmail(); event.stopPropagation();" title="Connect Gmail" style="cursor:pointer">
               </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span style="font-size: 11px; font-weight: 500;">Add MCP server</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
+              <span style="font-size: 13px; font-weight: 500;">Add MCP server</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
           </div>
