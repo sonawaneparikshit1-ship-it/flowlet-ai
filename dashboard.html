@@ -3061,48 +3061,58 @@
       }
 
       const nvidiaKey = "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".trim();
+      const geminiKey = "AIzaSyAlC7NGuG-GaKScXaFkB1dOfjuU8wXKTJU";
       var selectedModelName = "meta/llama-3.1-405b-instruct";
 
-      fetch('/api/chat', {
-        method: 'POST',
-        signal: window.currentAbortController.signal,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: selectedModelName,
-          messages: msgs
-        })
-      })
-        .then(function (r) { 
-          if (!r.ok) {
-            return r.json().then(err => { 
-              throw new Error(err.error ? err.error.message : 'API Error: ' + r.status + ' ' + r.statusText); 
-            }).catch(() => {
-              throw new Error('Network response was not ok (Status: ' + r.status + ')');
-            });
+      async function callAI(messages) {
+        // First try NVIDIA via proxy
+        try {
+          const proxyRes = await fetch('/api/chat', {
+            method: 'POST',
+            signal: window.currentAbortController.signal,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: selectedModelName, messages: messages })
+          });
+          if (proxyRes.ok) {
+            const data = await proxyRes.json();
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+              return data.choices[0].message.content;
+            }
           }
-          return r.json(); 
-        })
-        .then(function (d) {
+        } catch(proxyErr) {
+          console.warn('Proxy unavailable, falling back to Gemini:', proxyErr.message);
+        }
+        // Fallback: Direct Gemini API
+        const gemRes = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+          method: 'POST',
+          signal: window.currentAbortController.signal,
+          headers: { 'Authorization': 'Bearer ' + geminiKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: 'gemini-2.0-flash', messages: messages })
+        });
+        if (!gemRes.ok) {
+          const err = await gemRes.json().catch(() => ({}));
+          throw new Error(err.error ? err.error.message : 'API Error ' + gemRes.status);
+        }
+        const gemData = await gemRes.json();
+        if (gemData.choices && gemData.choices[0] && gemData.choices[0].message) {
+          return gemData.choices[0].message.content;
+        }
+        throw new Error('No valid response from API');
+      }
+
+      callAI(msgs)
+        .then(function(content) {
           if (window.stopStream) return;
           typ(false);
-          var rep;
-          if (d.error) {
-            rep = 'NVIDIA Error: ' + (d.error.message || JSON.stringify(d.error));
-          } else if (d.choices && d.choices[0] && d.choices[0].message) {
-            rep = clean(d.choices[0].message.content);
-          } else {
-            rep = 'Unexpected API response structure.';
-          }
+          var rep = clean(content);
           addMsg('ai', rep, true, true); push('ai', rep);
           resetSendButtons();
         })
-        .catch(function (e) {
+        .catch(function(e) {
           if (e.name === 'AbortError') return;
           typ(false);
-          console.error('NVIDIA Fetch error:', e);
-          addMsg('ai', 'Fetch Error: ' + e.message + '. (Note: NVIDIA API may block direct browser requests due to CORS. You might need a backend proxy.)');
+          console.error('Chat Error:', e);
+          addMsg('ai', 'Error: ' + e.message);
           resetSendButtons();
         });
     }
