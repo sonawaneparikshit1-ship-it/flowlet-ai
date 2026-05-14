@@ -1,151 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Login (CLERK) - Flowlet.ai</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script 
-  async 
-  data-clerk-publishable-key="pk_test_YWNlLXdhaG9vLTM2LmNsZXJrLmFjY291bnRzLmRldiQ" 
-  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" 
-  type="text/javascript">
-</script>
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family: 'Inter', sans-serif;
-  background-color: #ffffff;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #111;
-  -webkit-font-smoothing: antialiased;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Flowlet AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script 
+        async 
+        data-clerk-publishable-key="pk_test_YWNlLXdhaG9vLTM2LmNsZXJrLmFjY291bnRzLmRldiQ" 
+        src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" 
+        type="text/javascript">
+    </script>
+    <style>
+        :root {
+            --bg-pure: #000000;
+            --bg-card: #0a0a0a;
+            --bg-input: #111111;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent: #ffffff;
+            --font-main: 'Inter', sans-serif;
+        }
 
-#auth-container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  text-align: left !important; /* Force left alignment */
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.custom-header {
-  margin-bottom: 24px;
-  text-align: left !important;
-}
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-pure);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-.custom-header h1 {
-  font-size: 30px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  text-align: left !important;
-}
+        /* Subtle Background Glow */
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.custom-header p {
-  font-size: 15px;
-  color: #666;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-  text-align: left !important;
-}
+        #auth-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-#clerk-signin-container {
-  min-height: 200px; /* Space for the loader/component */
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* Custom styling for Clerk elements to match the screenshot */
-.cl-rootBox {
-  width: 100% !important;
-  text-align: left !important;
-}
-.cl-card {
-  box-shadow: none !important;
-  border: none !important;
-  padding: 0 !important;
-  width: 100% !important;
-  background: transparent !important;
-  text-align: left !important;
-}
-.cl-header { display: none !important; }
-.cl-footer { display: none !important; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
 
-@media (max-width: 480px) {
-  #auth-container {
-    padding: 24px;
-  }
-}
-</style>
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            background: #fff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            font-size: 16px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Clerk Overrides */
+        #clerk-signin-container {
+            min-height: 300px;
+        }
+
+        .cl-rootBox {
+            width: 100% !important;
+        }
+
+        .cl-card {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        .cl-header { display: none !important; }
+        .cl-footer { display: none !important; }
+
+        /* Custom Skeleton Loader */
+        #loader {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .skeleton {
+            background: var(--bg-card);
+            border-radius: 12px;
+            height: 52px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 480px) {
+            #auth-wrapper {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="glow"></div>
 
-<div id="auth-container">
-  <div class="custom-header">
-    <h1>Welcome back</h1>
-    <p>Sign in to continue building your pipeline with AI-powered lead research.</p>
-  </div>
-  <div id="clerk-signin-container"></div>
-</div>
+    <div id="auth-wrapper">
+        <div class="brand">
+            <div class="brand-logo">F</div>
+            <span class="brand-name">Flowlet</span>
+        </div>
 
-<script>
-  window.addEventListener('load', async function () {
-    if (!window.Clerk) return;
-    await Clerk.load();
+        <div class="header">
+            <h1>Welcome back</h1>
+            <p>Sign in to your account to continue.</p>
+        </div>
 
-    const signinContainer = document.getElementById('clerk-signin-container');
-    
-    if (Clerk.user) {
-      window.location.href = 'dashboard.html';
-    } else {
-      try {
-        Clerk.mountSignIn(signinContainer, {
-          afterSignInUrl: 'dashboard.html',
-          appearance: {
-            layout: {
-              socialButtonsVariant: 'iconButton',
-              showOptionalFields: false,
-            },
-            variables: {
-              colorPrimary: '#111',
-              colorTextSecondary: '#666',
-              borderRadius: '8px',
-              fontFamily: 'Inter, sans-serif'
-            },
-            elements: {
-              rootBox: { width: '100%' },
-              card: { boxShadow: 'none', border: 'none', padding: '0', width: '100%' },
-              header: { display: 'none' },
-              socialButtonsBlockButton: {
-                border: '1px solid #e5e7eb',
-                boxShadow: 'none',
-                height: '48px',
-                fontSize: '15px',
-                fontWeight: '500'
-              },
-              formFieldInput: {
-                height: '48px',
-                border: '1px solid #e5e7eb',
-                fontSize: '15px'
-              },
-              formButtonPrimary: {
-                height: '48px',
-                fontSize: '15px',
-                fontWeight: '600',
-                backgroundColor: '#888',
-                '&:hover': { backgroundColor: '#111' }
-              },
-              footer: { display: 'none' }
+        <div id="clerk-signin-container">
+            <!-- Skeleton Loader while Clerk initializes -->
+            <div id="loader">
+                <div class="skeleton"></div>
+                <div class="skeleton" style="width: 80%;"></div>
+                <div class="skeleton" style="height: 100px; margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', async function () {
+            if (!window.Clerk) return;
+            await Clerk.load();
+
+            const signinContainer = document.getElementById('clerk-signin-container');
+            const loader = document.getElementById('loader');
+            
+            if (Clerk.user) {
+                window.location.href = '../dashboard.html';
+            } else {
+                try {
+                    // Hide loader
+                    if(loader) loader.style.display = 'none';
+
+                    Clerk.mountSignIn(signinContainer, {
+                        afterSignInUrl: '../dashboard.html',
+                        appearance: {
+                            layout: {
+                                socialButtonsVariant: 'blockButton',
+                                showOptionalFields: false,
+                                helpPageUrl: 'https://flowlet.ai/support'
+                            },
+                            variables: {
+                                colorPrimary: '#ffffff',
+                                colorTextSecondary: '#a1a1aa',
+                                colorText: '#ffffff',
+                                colorBackground: '#000000',
+                                borderRadius: '12px',
+                                fontFamily: 'Inter, sans-serif'
+                            },
+                            elements: {
+                                rootBox: { width: '100%' },
+                                card: { 
+                                    boxShadow: 'none', 
+                                    border: 'none', 
+                                    padding: '0', 
+                                    width: '100%', 
+                                    background: 'transparent' 
+                                },
+                                header: { display: 'none' },
+                                socialButtonsBlockButton: {
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    backgroundColor: '#0a0a0a',
+                                    boxShadow: 'none',
+                                    height: '52px',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    color: '#ffffff',
+                                    borderRadius: '12px',
+                                    transition: 'all 0.2s ease',
+                                    '&:hover': { 
+                                        backgroundColor: '#111111',
+                                        borderColor: 'rgba(255,255,255,0.15)'
+                                    }
+                                },
+                                socialButtonsBlockButtonText: {
+                                    fontWeight: '500',
+                                    color: '#ffffff'
+                                },
+                                dividerLine: {
+                                    backgroundColor: 'rgba(255,255,255,0.08)'
+                                },
+                                dividerText: {
+                                    color: '#52525b',
+                                    fontSize: '12px',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
+                                },
+                                formFieldLabel: {
+                                    color: '#a1a1aa',
+                                    fontSize: '13px',
+                                    fontWeight: '500',
+                                    marginBottom: '8px'
+                                },
+                                formFieldInput: {
+                                    height: '52px',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    fontSize: '14px',
+                                    color: '#ffffff',
+                                    backgroundColor: '#0a0a0a',
+                                    borderRadius: '12px',
+                                    transition: 'all 0.2s ease',
+                                    '&:focus': { 
+                                        borderColor: 'rgba(255,255,255,0.2)',
+                                        backgroundColor: '#0f0f0f',
+                                        boxShadow: '0 0 0 1px rgba(255,255,255,0.05)'
+                                    }
+                                },
+                                formButtonPrimary: {
+                                    height: '52px',
+                                    fontSize: '14px',
+                                    fontWeight: '600',
+                                    backgroundColor: '#ffffff',
+                                    color: '#000000',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    marginTop: '8px',
+                                    transition: 'all 0.2s ease',
+                                    '&:hover': { 
+                                        backgroundColor: '#e5e7eb',
+                                        transform: 'translateY(-1px)'
+                                    },
+                                    '&:active': {
+                                        transform: 'translateY(0)'
+                                    }
+                                },
+                                footer: { display: 'none' },
+                                identityPreviewText: {
+                                    color: '#ffffff'
+                                },
+                                identityPreviewEditButtonIcon: {
+                                    color: '#ffffff'
+                                },
+                                formResendCodeLink: {
+                                    color: '#ffffff',
+                                    '&:hover': { color: '#e5e7eb' }
+                                }
+                            }
+                        }
+                    });
+                } catch (err) {
+                    console.error('Clerk Mount Error:', err);
+                }
             }
-          }
         });
-      } catch (err) {
-        console.error('Clerk Mount Error:', err);
-      }
-    }
-  });
-</script>
+    </script>
 </body>
 </html>

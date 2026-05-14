@@ -79,22 +79,22 @@
     :root {
       --f: 'Inter', sans-serif;
       --fh: 'Inter', sans-serif;
-      --bg: #ffffff;
-      --bg2: #ffffff;
-      --tx: #0a0a0a;
-      --mu: #666;
-      --mu2: #777;
-      --ac: #000000;
-      --b1: rgba(0, 0, 0, 0.08);
-      --b2: #ffffff;
-      --s1: #ffffff;
-      --s2: #faf7f7;
-      --r: 14px;
+      --bg: #000000;
+      --bg2: #111111;
+      --tx: #ffffff;
+      --mu: #a1a1aa;
+      --mu2: #71717a;
+      --ac: #8b5cf6;
+      --b1: rgba(255, 255, 255, 0.08);
+      --b2: #1a1a1a;
+      --s1: #0a0a0a;
+      --s2: #020202;
+      --r: 8px;
     }
 
     body {
       font-family: var(--f);
-      background: #ffffff;
+      background: #000000;
       color: var(--tx);
       height: 100vh;
       overflow: hidden;
@@ -145,7 +145,7 @@
     }
 
     .nav-card {
-      background: #fff;
+      background: #000000;
       border: 1px solid var(--b1);
       border-radius: 12px;
       display: flex;
@@ -153,6 +153,23 @@
       padding: 4px;
       gap: 4px;
       margin-bottom: 24px;
+    }
+
+    /* ── LAYOUT ── */
+    #root {
+      display: flex;
+      height: 100vh;
+      background: #000000;
+    }
+
+    #sidebar {
+      width: 250px;
+      border-right: 1px solid var(--b1);
+      display: flex;
+      flex-direction: column;
+      background: #000000;
+      transition: .3s;
+      z-index: 100
     }
 
     .ib {
@@ -221,48 +238,31 @@
 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 260px;
-      background: #ffffff;
-      border-right: 1px solid #f1f1f1;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      font-family: 'Inter', sans-serif;
-      flex-shrink: 0;
-      z-index: 100;
-      position: sticky;
-      top: 0;
-      transition: width 0.25s ease, padding 0.25s ease, opacity 0.2s;
-      overflow: hidden;
+      display: none !important;
+      width: 0 !important;
     }
-
     .sidebar.hidden {
-      width: 0;
-      padding: 0;
-      opacity: 0;
-      pointer-events: none;
-      border-right: none;
+      display: none !important;
     }
 
-    /* Floating button to re-open sidebar when hidden */
     #sb-open-btn {
       display: none;
       position: fixed;
       top: 16px;
       left: 16px;
       z-index: 200;
-      background: #fff;
-      border: 1px solid #e5e7eb;
+      background: #18181b;
+      border: 1px solid #27272a;
       border-radius: 6px;
       width: 32px;
       height: 32px;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
-    #sb-open-btn:hover { background: #f4f4f5; }
+    #sb-open-btn:hover { background: #27272a; }
     .sidebar.hidden ~ * #sb-open-btn { display: flex; }
 
     .sb-close-btn {
@@ -274,125 +274,112 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: #a1a1aa;
+      color: #91918e;
       flex-shrink: 0;
+      transition: 0.1s;
     }
-    .sb-close-btn:hover { background: #f4f4f5; color: #111; }
+    .sb-close-btn:hover { background: #efefed; color: #37352f; }
 
     .sb-user {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 8px;
-      border-radius: 8px;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      margin-bottom: 20px;
+      margin: 12px 12px 16px;
+      transition: 0.1s;
     }
+    .sb-user:hover { background: rgba(255,255,255,0.05); }
 
     .sb-user-av {
-      width: 32px;
-      height: 32px;
-      background: #f4f4f5;
-      border-radius: 4px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      color: #18181b;
-      font-size: 14px;
     }
 
     .sb-user-name {
       font-size: 14px;
       font-weight: 500;
-      color: #18181b;
+      color: #ffffff;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .sb-new-chat {
-      width: 100%;
-      padding: 10px;
-      background: #ffffff;
-      border: 1px dashed #e4e4e7;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #71717a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      cursor: pointer;
-    }
-
     .sb-section {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .sb-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #a1a1aa;
-      padding: 8px;
-      text-transform: capitalize;
+      font-size: 13px;
+      font-weight: 500;
+      color: #71717a;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .sb-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #3f3f46;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-weight: 400;
+      color: #e5e5e5;
       cursor: pointer;
-      transition: 0.1s;
+      transition: background 0.2s, color 0.2s;
+      position: relative;
     }
 
-    .sb-item:hover, .sb-item.on {
-      background: #f4f4f5;
-      color: #18181b;
+    .sb-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .sb-item.on {
+      background: rgba(255,255,255,0.08);
+      color: #ffffff;
     }
 
     .sb-item svg {
       width: 18px;
       height: 18px;
       color: #71717a;
+      flex-shrink: 0;
     }
 
-    .sb-item.on svg {
-      color: #18181b;
+    .sb-item:hover svg {
+      color: #ffffff;
     }
 
-    .sb-upgrade {
-      background: #f0f4ff;
-      border-radius: 8px;
-      padding: 12px;
+    .sb-badge {
+      background: #2a2a2a;
+      color: #a1a1aa;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: auto;
+    }
+
+    .sb-time {
+      font-size: 13px;
+      color: #71717a;
+      margin-left: auto;
+    }
+
+    .sb-footer {
       margin-top: auto;
+      padding: 16px;
+      border-top: 1px solid #2a2a2a;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .sb-credits {
-      margin-top: 8px;
-      background: #f8f8f8;
-      padding: 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 12px;
-      cursor: pointer;
     }
 
-    .sb-res {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #f1f1f1;
-    }
 
     /* ── MAIN LAYOUT ── */
     .main {
@@ -400,15 +387,17 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
       overflow-y: auto;
-      background: #ffffff;
+      background: #000000;
       border: none;
       box-shadow: none;
       position: relative;
     }
 
     #home {
-      background: #ffffff;
+      background: #000000;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -465,12 +454,12 @@
     }
 
     .trust-pill {
-      background: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: #111111;
+      border: 1px solid var(--b1);
       border-radius: 20px;
       padding: 6px 16px;
       font-size: 13px;
-      color: #666;
+      color: #a1a1aa;
       margin-bottom: 24px;
       display: flex;
       align-items: center;
@@ -518,10 +507,9 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
+      margin: 0;
       padding: 60px 20px;
-      background: #ffffff;
+      background: var(--bg);
     }
 
     .adv-subtitle {
@@ -537,8 +525,8 @@
     .adv-input-box {
       width: 100%;
       max-width: 720px !important;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      background: #09090b;
+      border: 1px solid var(--b1);
       border-radius: 2px;
       padding: 60px 16px !important;
       min-height: 170px;
@@ -558,7 +546,7 @@
       resize: none;
       font-size: 15px;
       outline: none;
-      color: #18181b;
+      color: #fafafa;
       padding: 0;
       min-height: 76px;
       font-family: var(--f);
@@ -570,8 +558,8 @@
       position: absolute;
       bottom: 12px;
       right: 12px;
-      background: #000;
-      color: #fff;
+      background: #fafafa;
+      color: #000;
       width: 28px;
       height: 28px;
       border-radius: 2px;
@@ -582,8 +570,51 @@
       transition: all 0.2s;
     }
 
-    .adv-send-btn:hover {
-      background: #000;
+    /* ── MESSAGES AREA ── */
+    #adv-mh {
+      flex: 1;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto !important;
+      display: flex !important;
+      flex-direction: column;
+      gap: 24px;
+      padding-top: 120px;
+    }
+
+    .chat-message {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+      margin-bottom: 20px;
+    }
+
+    .chat-message.user {
+      align-self: flex-end;
+    }
+
+    .chat-message.ai {
+      align-self: flex-start;
+    }
+
+    .message-content {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .chat-message.user .message-content {
+      background: #1a1a1b;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px 12px 0 12px;
+    }
+
+    .chat-message.ai .message-content {
+      background: transparent;
+      color: #fff;
+      padding-left: 0;
     }
 
     .adv-connect-pills {
@@ -639,8 +670,8 @@
     }
 
     .adv-sheet-card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      background: #050505;
+      border: 1px solid var(--b1);
       border-radius: 4px;
       height: 200px;
       overflow: hidden;
@@ -667,7 +698,7 @@
     }
 
     .home-title {
-      font-size: 56px;
+      font-size: 48px;
       font-weight: 500;
       letter-spacing: -0.02em;
       text-align: center;
@@ -705,8 +736,8 @@
     .icard {
       width: 100%;
       max-width: 820px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      background: #0a0a0a;
+      border: 1px solid var(--b1);
       border-radius: 0px;
       overflow: hidden;
       transition: border-color .2s, box-shadow .2s;
@@ -900,15 +931,46 @@
       white-space: nowrap
     }
 
+    /* PREMIUM CHAT BOX */
+    .premium-chat-box textarea::placeholder {
+      color: #9ca3af;
+      opacity: 1;
+    }
+
+    .chat-icon-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .chat-icon-btn:hover {
+      background: #f3f4f6;
+      color: #111;
+      border-color: #d1d5db;
+    }
+
+    .chat-icon-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
     .tab:hover {
-      background: #fcfcfc;
+      background: #0a0a0a;
       transform: translateY(-1px)
     }
 
     .tab.on {
-      background: #efefef;
-      color: #000;
-      border-color: rgba(0, 0, 0, 0.1);
+      background: #1a1a1a;
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
     /* ── TEMPLATES GRID ── */
@@ -930,7 +992,7 @@
     }
 
     .tpl-card {
-      background: #fff;
+      background: #050505;
       border: 1px solid var(--b1);
       border-radius: 6px;
       padding: 32px;
@@ -1107,16 +1169,37 @@
 
     .msg.ai .bubble {
       background: transparent;
-      color: #111;
+      color: var(--tx);
       padding: 6px 0;
       font-size: 14.5px;
       font-weight: 400;
     }
 
+    /* Dark theme chat bubbles for adv-mh */
+    #adv-mh { display: flex; flex-direction: column; gap: 12px; }
+    #adv-mh .msg.user { align-items: flex-end; }
+    #adv-mh .msg.ai { align-items: flex-start; }
+    #adv-mh .msg.user .bubble {
+      background: rgba(255,255,255,0.07);
+      color: #f4f4f5;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      max-width: 80%;
+    }
+    #adv-mh .msg.ai .bubble {
+      background: transparent;
+      color: #d4d4d8;
+      padding: 8px 4px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
     .ai-text-wrap {
       font-size: 14.5px;
       line-height: 1.6;
-      color: #111;
+      color: var(--tx);
       font-family: var(--f);
     }
 
@@ -1556,64 +1639,73 @@
       pointer-events: none;
       filter: blur(40px);
     }
+    .orange-powder { filter: blur(60px); opacity: 0.15; }
   </style>
 </head>
 
 <body>
   <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <div class="sb-user">
-      <div class="sb-user-av">P</div>
-      <div class="sb-user-name">parikshitsonawane...</div>
-      <div class="sb-close-btn" onclick="closeSidebar()" title="Close sidebar">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <div class="sidebar hidden" id="sidebar">
+    <div style="padding: 16px 0;">
+      <div class="sb-item" onclick="newT()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        New chat
+      </div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Plugins
+      </div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Automations
+        <span class="sb-badge">1</span>
       </div>
     </div>
 
-    <div class="sb-new-chat" onclick="newT()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Chat
-    </div>
-
     <div class="sb-section">
-      <div class="sb-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Projects</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Shared with me</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Templates</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> Trash</div>
-    </div>
-
-    <div class="sb-section">
-      <div class="sb-label">Configure</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg> Integrations</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Skills</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> API Keys <span style="font-size:10px; color:#a1a1aa; margin-left:4px;">beta</span></div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Usage</div>
-    </div>
-
-    <div class="sb-section">
-      <div class="sb-label">Recents</div>
-      <div id="tlist"></div>
-    </div>
-
-    <div class="sb-upgrade">
-      <span style="font-size:14px; font-weight:500; color:#2563eb;">Upgrade</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-    </div>
-
-    <div class="sb-credits">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8l-8 8"/><path d="M8 8l8 8"/></svg>
-      <div>
-        <div style="font-size:13px; font-weight:600;">1,773</div>
-        <div style="font-size:11px; color:#a1a1aa;">Credits available</div>
+      <div class="sb-label">Projects</div>
+      <div class="sb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        New project
       </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" style="margin-left:auto"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
 
-    <div class="sb-res">
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Join our Slack</div>
-      <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Contact</div>
+    <div class="sb-section">
+      <div class="sb-label">
+        Chats
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="2" y1="14" x2="6" y2="14"/><line x1="10" y1="12" x2="14" y2="12"/><line x1="18" y1="16" x2="22" y2="16"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+      </div>
+      <div id="tlist">
+        <!-- Mock recent chats to match screenshot -->
+        <div class="sb-item">Greet user <span class="sb-time">2h</span></div>
+        <div class="sb-item">
+          Add heartbeat attention scan 
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 8px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="sb-time">2h</span>
+        </div>
+        <div class="sb-item">Create priorities Notion doc <span class="sb-time">2h</span></div>
+        <div class="sb-item">Break down team triage <span class="sb-time">2h</span></div>
+        <div class="sb-item">Define AI <span class="sb-time">21h</span></div>
+        <div class="sb-item">Say hello <span class="sb-time">2d</span></div>
+      </div>
     </div>
+
+    <div class="sb-footer">
+      <div class="sb-item" style="padding: 0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+        <button style="background: #2a2a2a; color: #fff; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; cursor: pointer; margin-left: auto;">Upgrade</button>
+      </div>
+    </div>
+  </div>
+
   </div>
 
   <!-- Floating button to re-open sidebar -->
@@ -1624,14 +1716,14 @@
   <!-- MAIN -->
   <div class="main">
     <div class="topbar"
-      style="background:#ffffff; border:none; box-shadow:none; padding:24px 40px; display:flex; justify-content:space-between; align-items:center;">
+      style="background: transparent; border:none; box-shadow:none; padding:24px 40px; display:flex; justify-content:space-between; align-items:center;">
       <div></div>
       <div id="authButtons" style="display:flex;gap:20px;align-items:center;font-family:var(--f);">
         <button onclick="window.location.href='login.html'"
-          style="background:transparent;border:none;color:#000;font-weight:600;font-size:14px;cursor:pointer;padding:6px 12px;border-radius:4px;font-family:var(--f);">Log
+          style="background:transparent;border:none;color:#a1a1aa;font-weight:600;font-size:14px;cursor:pointer;padding:6px 12px;border-radius:4px;font-family:var(--f);transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a1a1aa'">Log
           in</button>
         <button id="signUpGoBtn" onclick="window.location.href='login.html?mode=signup'"
-          style="background:#111;border:none;color:#fff;font-weight:600;font-size:14px;cursor:pointer;padding:10px 22px;border-radius:4px;font-family:var(--f);box-shadow: 0 4px 12px rgba(0,0,0,0.1);">Sign
+          style="background:#ffffff;border:none;color:#000000;font-weight:600;font-size:14px;cursor:pointer;padding:10px 22px;border-radius:4px;font-family:var(--f);box-shadow: 0 4px 12px rgba(255,255,255,0.1);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">Sign
           up</button>
       </div>
       <div id="userProfile" style="display:none;gap:10px;align-items:center;font-family:var(--f);">
@@ -1639,66 +1731,173 @@
         <span id="userEmailDisplay" style="font-size:13px;color:var(--mu2);font-weight:500;">Guest</span>
         <button id="logoutBtn"
           style="background:transparent;border:1px solid #ef4444;color:#ef4444;font-weight:500;font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;margin-left:8px;transition:0.15s;"
-          onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">Logout</button>
+          onmouseover="this.style.background='#1a0000'" onmouseout="this.style.background='transparent'">Logout</button>
       </div>
     </div>
 
     <!-- HOME -->
-    <!-- HOME -->
     <div id="home">
-      <!-- LANDING PAGE SECTION -->
-      <div class="home-inner" id="landing-page" style="margin-top: 4vh;">
-        <div class="orange-powder"></div>
-        <div class="trust-pill">Trusted by 5,000+ sales and RevOps teams</div>
-        <h1 class="home-title" id="main-title">Automate any sales workflow with AI</h1>
-        <p class="home-subtitle" id="main-subtitle" style="margin-bottom: 32px;">Find customers, enrich them with the best data, and build revenue<br>workflows that actually survive real-world complexity</p>
+      <div id="landing-page" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 15vh; padding-bottom: 10vh; position: relative; width: 100%;">
+        
 
-        <button class="cta-black" onclick="openAdvancedDashboard()" style="margin-bottom: 60px;">
-          Get started - it's free
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
+        <h1 style="font-size: 32px; font-weight: 500; color: #fff; margin-bottom: 40px; font-family: var(--f); letter-spacing: -0.02em;">What should we build in New project?</h1>
 
-        <div id="landing-chat-section" style="width: 100%; display: flex; flex-direction: column; align-items: center; pointer-events: none; opacity: 0.85;">
-          <div class="icard" style="padding-bottom: 12px; max-width: 640px !important;">
-            <style>#ci::placeholder { font-size: 12px !important; }</style>
-            <textarea id="ci"
-              placeholder="When a lead fills out our demo form, enrich them and route hot ones to the right rep on Slack"
-              rows="1" readonly style="font-size: 12px !important;"></textarea>
-            <div class="itoolbar" style="justify-content: space-between; align-items: flex-end; padding: 0 16px;">
-              <div class="enter-hint">↵ to start</div>
-              <button class="send-btn" id="sb" style="cursor: default;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="19" x2="12" y2="5"></line>
-                  <polyline points="5 12 12 5 19 12"></polyline>
-                </svg>
-              </button>
+        <!-- NEW REDESIGNED INPUT BOX (Matched to Screenshot) -->
+        <div style="width: 100%; max-width: 800px; background: #0c0c0c; border: 1px solid rgba(255,255,255,0.12); border-radius: 0; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+          
+          <!-- Inner Chat Container -->
+          <div style="padding: 8px 24px 6px; display: flex; flex-direction: column;">
+            <!-- Textarea -->
+            <textarea id="ci-landing" placeholder="Describe a task or responsibility" style="width: 100%; border: none; outline: none; background: transparent; color: #fff; font-size: 16px; font-family: var(--f); resize: none; min-height: 20px; line-height: 1.4; padding: 0;" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
+            
+            <!-- Tool Row -->
+            <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <!-- Left: Tools Group -->
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button title="Attach" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #71717a; width: 36px; height: 36px; border-radius: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform: rotate(45deg);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                </button>
+                <button title="Connectors" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #71717a; width: 36px; height: 36px; border-radius: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-4"/><path d="M8 8v2a4 4 0 0 0 8 0V8"/><path d="M10 2v6"/><path d="M14 2v6"/><rect width="12" height="8" x="6" y="8" rx="2" ry="2"/></svg>
+                </button>
+                <button title="Desktop" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #71717a; width: 36px; height: 36px; border-radius: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </button>
+                <button title="Lightning" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #71717a; width: 36px; height: 36px; border-radius: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </button>
+                <button title="Phone" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #71717a; width: 36px; height: 36px; border-radius: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </button>
+              </div>
+
+              <!-- Right: Actions Group -->
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="color: #fff; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                  Advanced <span style="color: #555;">$$</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <button title="Voice" style="background: transparent; border: none; color: #71717a; cursor: pointer;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+              </div>
             </div>
           </div>
 
-
-          <!-- TEMPLATES SECTION REPLACED WITH VIDEO -->
-          <div class="tpl-sec" style="width: 100%; max-width: 1200px; margin-top: 40px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
-            <video src="../Recording 2026-05-01 142239.mp4" autoplay loop muted playsinline style="width: 100%; height: auto; display: block; border-radius: 8px;"></video>
+          <!-- Bottom Integrations Bar (Matched to Screenshot) -->
+          <div style="background: #111; border-top: 1px solid rgba(255,255,255,0.05); padding: 5px 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px; color: #71717a; font-size: 13px; font-weight: 500; cursor: pointer;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-4"/><path d="M8 8v2a4 4 0 0 0 8 0V8"/><path d="M10 2v6"/><path d="M14 2v6"/><rect width="12" height="8" x="6" y="8" rx="2" ry="2"/></svg>
+              Connect to any App, API, or MCP
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="https://img.icons8.com/color/48/gmail-new.png" width="16" height="16">
+              <img src="https://img.icons8.com/color/48/google-drive--v1.png" width="16" height="16">
+              <img src="https://img.icons8.com/color/48/google-calendar--v2.png" width="16" height="16">
+              <img src="https://img.icons8.com/color/48/slack-new.png" width="16" height="16">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="16" height="16" style="filter: invert(1);">
+              <img src="https://img.icons8.com/color/48/github--v1.png" width="16" height="16">
+              <span style="color: #71717a; font-size: 12px; font-weight: 600; margin-left: 4px;">+1000s</span>
+            </div>
           </div>
+        </div>
+
+        <!-- Secondary Links below (Clean) -->
+        <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; width: 100%; max-width: 800px; padding: 0 4px;">
+          <a href="#" style="color: #71717a; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; font-weight: 500;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            Connect to GitHub
+          </a>
+          <a href="#" style="color: #71717a; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; font-weight: 500;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Connect your favorite apps to Flowlet
+          </a>
+        </div>
         </div>
       </div>
+    </div>
+      <div id="advanced-dashboard" style="display:none; margin-top: 0; padding: 0; background: #000000; flex-direction: column; align-items: center; justify-content: flex-start; height: 100vh; overflow: hidden; position: relative;">
 
-      <div id="advanced-dashboard" style="display:none; margin-top: 0; padding: 18vh 0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-y: auto;">
-        <h1 class="home-title" style="font-size: 24px; font-weight: 600; letter-spacing: -0.04em; margin-bottom: 6px;">Let's find your next customer</h1>
-        <p class="adv-subtitle" style="font-size: 14.5px; color: #71717a; margin-bottom: 32px;">Tell us what you need and we'll handle the rest.</p>
+        <!-- Top Right: User Profile (Matches Screenshot) -->
+        <div style="position: absolute; top: 24px; right: 32px; display: flex; flex-direction: column; align-items: center; z-index: 100;">
+          <div style="width: 32px; height: 32px; background: #18181b; border: 1px solid #27272a; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 13px; font-weight: 600; font-family: var(--f);">
+            HI
+          </div>
+          <div style="color: #71717a; font-size: 10px; margin-top: 6px; font-family: var(--f);">7:41 AM</div>
+        </div>
 
-        <div style="width: 100%; max-width: 800px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 0px; padding: 21px 16px; position: relative; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
-          <textarea class="adv-textarea" id="adv-ci" placeholder="Find leads, enrich data, build lists..." 
-            style="width: 100%; border: none; outline: none; font-size: 13px; resize: none; min-height: 60px; font-family: var(--f); color: #111; background: transparent; padding: 0; margin-top: 10px;"></textarea>
-          <div class="send-btn" id="sb-adv" onclick="sendAdv()" style="position: absolute; bottom: 16px; right: 16px; background: #000000; color: #ffffff; width: 26px; height: 26px; border-radius: 0px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        <!-- EMPTY STATE (Hidden as per minimalist design) -->
+        <div id="adv-empty" style="display: none !important;"></div>
+
+        <!-- MESSAGES AREA (Pre-populated to match screenshot) -->
+        <div id="adv-mh" style="flex: 1; width: 100%; max-width: 860px; overflow-y: auto; padding: 120px 20px 0; display: flex !important; flex-direction: column; margin: 0 auto;">
+          
+          <!-- Default Greeting Message -->
+          <div style="display: flex; flex-direction: column; margin-bottom: 24px;">
+            <div style="color: #ffffff; font-size: 15px; font-weight: 400; font-family: var(--f); line-height: 1.5; margin-bottom: 12px;">
+              Hi Parikshit! 👋 How can I help you today?
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; color: #71717a;">
+              <button style="background: transparent; border: none; padding: 0; cursor: pointer; color: #71717a; display: flex; align-items: center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              </button>
+              <button style="background: transparent; border: none; padding: 0; cursor: pointer; color: #71717a; display: flex; align-items: center;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- ADVANCED DASHBOARD CHAT INPUT -->
+        <div id="adv-chat-wrap" style="width: 100%; max-width: 860px; margin: 0 auto 30px; text-align: left; font-family: var(--f); z-index: 10; flex-shrink: 0;">
+          <div class="icard" style="padding: 0; display: flex; flex-direction: column; background: #0f0f11; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;">
+            
+            <div style="padding: 14px 18px 12px; display: flex; flex-direction: column;">
+              <!-- Textarea -->
+              <textarea id="adv-ci" placeholder="Reply to Tasklet..." rows="1" style="width: 100%; border: none; outline: none; font-size: 15px; resize: none; min-height: 32px; font-family: var(--f); color: #e4e4e7; background: transparent; padding: 0; margin-bottom: 18px; font-weight: 400; line-height: 1.5;"></textarea>
+              
+              <!-- Tool Row -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- Left: 5 Icons -->
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #a1a1aa; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(255,255,255,0.15)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                  </button>
+                  <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #a1a1aa; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(255,255,255,0.15)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-4"/><path d="M8 8v2a4 4 0 0 0 8 0V8"/><path d="M10 2v6"/><path d="M14 2v6"/><rect width="12" height="8" x="6" y="8" rx="2" ry="2"/></svg>
+                  </button>
+                  <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #a1a1aa; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(255,255,255,0.15)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  </button>
+                  <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #a1a1aa; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(255,255,255,0.15)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </button>
+                  <button style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #a1a1aa; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(255,255,255,0.15)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </button>
+                </div>
+
+                <!-- Right: Actions -->
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #ffffff; cursor: pointer;">
+                    Advanced <span style="color: #71717a;">$$</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <button style="background: transparent; border: none; color: #a1a1aa; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a1a1aa'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          <!-- No Integrations Bar for this design as requested -->
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px;">
+        <div id="adv-pills" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px;">
+          <!-- Pills will inherit styles from CSS -->
           <div id="hubspot-pill" class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px; display: flex; align-items: center; gap: 8px;" onclick="connectHubSpot()">
-            <span style="background: white; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0;">
+            <span style="background: transparent; border-radius: 4px; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0;">
               <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FF7A59%22%20d%3D%22M123.6%20390.5a72.5%2072.5%200%200%201-5.7-28.7c0-39.7%2032.2-72%2072-72a72.1%2072.1%200%200%201%2021.6%203.3L324.5%20180c-2.4-5.6-3.8-11.7-3.8-18.1%200-25.3%2020.5-45.9%2045.9-45.9s45.9%2020.5%2045.9%2045.9-20.5%2045.9-45.9%2045.9a46.1%2046.1%200%200%201-13.7-2.1L240.2%20318.5c2.4%205.6%203.8%2011.7%203.8%2018.1%200%2025.3-20.5%2045.9-45.9%2045.9s-45.9-20.5-45.9-45.9a46.1%2046.1%200%200%201%202.1-13.7L50.7%20219.2a46.1%2046.1%200%200%201-4.8%201.1C20.5%20220.3%200%20199.8%200%20174.4S20.5%20128.5%2045.9%20128.5s45.9%2020.5%2045.9%2045.9a46.1%2046.1%200%200%201-3.3%2017.2l128.2%20128.2a72.1%2072.1%200%200%201%2039.3-11.8c39.7%200%2072%2032.2%2072%2072s-32.2%2072-72%2072c-39.7%200-72-32.2-72-72%200-11.7%202.8-22.8%207.7-32.5L123.6%20390.5z%22%2F%3E%3C%2Fsvg%3E" width="16" height="16" style="transform: rotate(-90deg);">
             </span>
             <span id="hubspot-pill-text">Connect HubSpot</span>
@@ -1711,80 +1910,33 @@
             <img src="https://img.icons8.com/color/48/slack-new.png" width="18" height="18" alt="Slack">
             <span id="slack-pill-text">Connect Slack</span>
           </div>
+          <div id="notion-pill" class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="connectNotion()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="18" height="18" alt="Notion">
+            <span id="notion-pill-text">Connect Notion</span>
+          </div>
+          <div id="discord-pill" class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="connectDiscord()">
+            <img src="https://img.icons8.com/color/48/discord-logo.png" width="18" height="18" alt="Discord">
+            <span id="discord-pill-text">Connect Discord</span>
+          </div>
           <div class="adv-pill" style="border-radius: 4px; padding: 6px 14px; font-size: 13px;" onclick="openConnectionsModal()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #111;"><path d="M18 10h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-1"/><path d="M6 10H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h1"/><path d="M12 2v2"/><path d="M12 18v4"/><path d="M8 6h8v12H8z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--mu);"><path d="M18 10h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-1"/><path d="M6 10H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h1"/><path d="M12 2v2"/><path d="M12 18v4"/><path d="M8 6h8v12H8z"/></svg>
             Connect MCP
           </div>
         </div>
 
-        <div class="adv-sheets-sec" style="width: 100%; max-width: 1200px; padding: 0 40px; margin-top: 40px;">
-          <h2 class="adv-sheets-head" style="font-size: 20px; font-weight: 600; color: #111; margin-bottom: 20px;">Recent Sheets</h2>
-          <div class="adv-sheets-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px;">
-            <div class="adv-sheet-card" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; aspect-ratio: 16/9; overflow: hidden; cursor: pointer;">
-              <div class="adv-sheet-mock" style="width: 100%; height: 100%; background: #f9fafb; background-image: 
-                linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-                background-size: 40px 20px;"></div>
-            </div>
-            <div class="adv-sheet-card" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; aspect-ratio: 16/9; overflow: hidden; cursor: pointer;">
-              <div class="adv-sheet-mock" style="width: 100%; height: 100%; background: #f9fafb; background-image: 
-                linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-                background-size: 40px 20px;"></div>
-            </div>
-            <div class="adv-sheet-card" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; aspect-ratio: 16/9; overflow: hidden; cursor: pointer;">
-              <div class="adv-sheet-mock" style="width: 100%; height: 100%; background: #f9fafb; background-image: 
-                linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-                background-size: 40px 20px;"></div>
-            </div>
-            <div class="adv-sheet-card" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; aspect-ratio: 16/9; overflow: hidden; cursor: pointer;">
-              <div class="adv-sheet-mock" style="width: 100%; height: 100%; background: #f9fafb; background-image: 
-                linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
-                background-size: 40px 20px;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- CHAT VIEW -->
-    <div id="chat">
-      <div id="mh"></div>
-      <div id="cinput-wrap">
-        <div class="icard" style="padding: 0; display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-radius: 8px;">
-          <textarea id="ci2" placeholder="Find leads, enrich data, drop any file..." rows="1" style="padding: 8px 14px; min-height: 36px;"></textarea>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 14px;">
-            <div style="display: flex; align-items: center; gap: 14px; color: #6b7280;">
-              <div style="display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
-                Agent
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-              </div>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 14px; color: #6b7280;">
-              <div style="width: 14px; height: 14px; border: 2px solid #d1d5db; border-radius: 50%; cursor: pointer;"></div>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-              <button class="send-btn" id="sb2" onclick="send2()" style="margin-left: 0; background: #000000; color: #ffffff; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <line x1="12" y1="19" x2="12" y2="5"></line>
-                  <polyline points="5 12 12 5 19 12"></polyline>
-                </svg>
-              </button>
-            </div>
-          </div>
+
         </div>
 
-        <!-- TASKLET STYLE CONNECT APPS BAR (Updated for Chat) -->
-      </div>
-    </div>
+
+    <!-- CHAT VIEW is now inside advanced-dashboard -->
+    <div id="chat" style="display: none;"><div id="mh"></div></div>
   </div>
 
   <!-- GMAIL OAUTH CONFIGURATION (No Webhook Modal) -->
 
   <script>
-    var tid = null;
+    var tid = 't' + Date.now();
 
     // Dynamic function to ALWAYS get the fresh token status, bypassing execution order issues
     function getPTk() {
@@ -1918,40 +2070,7 @@
       });
     }
 
-    // VIEWS — sidebar shows on chat, hides on home
-    function goHome() {
-      const home = document.getElementById('home');
-      const chat = document.getElementById('chat');
-      const adv = document.getElementById('advanced-dashboard');
-      if (home) {
-        home.style.display = 'flex';
-        home.style.backgroundImage = 'none';
-      }
-      if (chat) chat.style.display = 'none';
-      if (adv) adv.style.display = 'none';
-    }
-    function goChat() {
-      const home = document.getElementById('home');
-      const chat = document.getElementById('chat');
-      const adv = document.getElementById('advanced-dashboard');
-      const sp = document.getElementById('spreadsheet-view');
-      const sb = document.getElementById('sidebar');
-      const main = document.querySelector('.main');
-      
-      if (home) home.style.display = 'none';
-      if (adv) adv.style.display = 'none';
-      if (chat) chat.style.display = 'none';
-      if (sb) sb.style.display = 'none';
-      if (main) main.style.display = 'none';
-      
-      if (sp) {
-        sp.style.display = 'flex';
-        var typed = document.getElementById('adv-ci').value.trim();
-        if (typed && document.getElementById('sp-chat-content')) {
-           document.getElementById('sp-chat-content').textContent = typed;
-        }
-      }
-    }
+    // VIEWS are now defined at the bottom of the script to avoid duplication
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('hidden');
     }
@@ -1964,8 +2083,23 @@
       if (anim !== false) goChat();
       var w = document.createElement('div');
       w.className = 'msg ' + role;
+      w.style.width = '100%';
+      
       var b = document.createElement('div');
       b.className = 'bubble';
+      
+      if (role === 'ai') {
+        w.style.display = 'flex';
+        w.style.flexDirection = 'row';
+        w.style.alignItems = 'flex-start';
+        w.style.gap = '12px';
+
+        var av = document.createElement('div');
+        av.style.cssText = 'width: 24px; height: 24px; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 6px;';
+        av.innerHTML = '<span style="color:#000; font-weight:700; font-size:14px; line-height:1; font-family:var(--f);">T</span>';
+        w.appendChild(av);
+      }
+      
       w.appendChild(b);
 
       var txtWrap = b;
@@ -1983,19 +2117,9 @@
         b.appendChild(txtWrap);
       }
 
-      var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh');
+      var mhTarget = document.getElementById('adv-mh') || document.getElementById('mh');
       if (mhTarget) {
         mhTarget.appendChild(w);
-        if (typeof isSPActive === 'function' && isSPActive()) {
-          var spt = document.getElementById('sp-title');
-          var spb = document.getElementById('sp-btns');
-          var spe = document.getElementById('sp-extra-btns');
-          var spp = document.getElementById('sp-prospecting');
-          if(spt) spt.style.display = 'none';
-          if(spb) spb.style.display = 'none';
-          if(spe) spe.style.display = 'none';
-          if(spp) spp.style.display = 'none';
-        }
       }
 
       if (stream && role === 'ai') {
@@ -2028,13 +2152,13 @@
       if (b.querySelector('.ai-actions')) return;
       var actWrap = document.createElement('div');
       actWrap.className = 'ai-actions';
-      actWrap.innerHTML = '<button class="ai-act-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></button><button class="ai-act-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg></button>';
+      actWrap.innerHTML = '<button class="ai-act-btn" title="Copy"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="ai-act-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></button><button class="ai-act-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg></button>';
       b.appendChild(actWrap);
     }
-    function scroll() { var h = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-scroll-area') : document.getElementById('mh'); if (!h) return; setTimeout(function () { h.scrollTop = h.scrollHeight; }, 10); }
-    function ecrd(fetching) { var w = document.createElement('div'); w.className = 'msg ai'; var d = document.createElement('div'); d.className = 'ecrd'; d.innerHTML = '<img src="https://img.icons8.com/color/512/gmail-new.png" style="width:14px;height:14px;object-fit:contain"/><span>Email List</span><span class="ebadge">' + (fetching ? 'Fetching...' : 'Complete ✓') + '</span>'; w.appendChild(d); var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(w); scroll(); return w; }
+    function scroll() { var h = document.getElementById('adv-mh'); if (!h) return; setTimeout(function () { h.scrollTop = h.scrollHeight; }, 10); }
+    function ecrd(fetching) { var w = document.createElement('div'); w.className = 'msg ai'; var d = document.createElement('div'); d.className = 'ecrd'; d.innerHTML = '<img src="https://img.icons8.com/color/512/gmail-new.png" style="width:14px;height:14px;object-fit:contain"/><span>Email List</span><span class="ebadge">' + (fetching ? 'Fetching...' : 'Complete ✓') + '</span>'; w.appendChild(d); var mhTarget = document.getElementById('adv-mh') || document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(w); scroll(); return w; }
     var typEl = null;
-    function typ(on) { if (on) { if (typEl) return; typEl = document.createElement('div'); typEl.className = 'msg ai'; typEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>'; var mhTarget = (typeof isSPActive === 'function' && isSPActive()) ? document.getElementById('sp-mh') : document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(typEl); scroll(); } else { if (typEl) { typEl.remove(); typEl = null; } } }
+    function typ(on) { if (on) { if (typEl) return; typEl = document.createElement('div'); typEl.className = 'msg ai'; typEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>'; var mhTarget = document.getElementById('adv-mh') || document.getElementById('mh'); if(mhTarget) mhTarget.appendChild(typEl); scroll(); } else { if (typEl) { typEl.remove(); typEl = null; } } }
 
     function clean(t) {
       if (!t) return "";
@@ -2936,14 +3060,13 @@
         if (t && t.messages) t.messages.forEach(function (m) { msgs.push({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.text }); });
       }
 
-      const groqKey = "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";
-      var selectedModelName = "llama-3.3-70b-versatile"; 
+      const nvidiaKey = "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".trim();
+      var selectedModelName = "meta/llama-3.1-405b-instruct";
 
-      fetch('https://api.groq.com/openai/v1/chat/completions', {
+      fetch('/api/chat', {
         method: 'POST',
         signal: window.currentAbortController.signal,
         headers: {
-          'Authorization': 'Bearer ' + groqKey,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -2951,18 +3074,26 @@
           messages: msgs
         })
       })
-        .then(function (r) { return r.json(); })
+        .then(function (r) { 
+          if (!r.ok) {
+            return r.json().then(err => { 
+              throw new Error(err.error ? err.error.message : 'API Error: ' + r.status + ' ' + r.statusText); 
+            }).catch(() => {
+              throw new Error('Network response was not ok (Status: ' + r.status + ')');
+            });
+          }
+          return r.json(); 
+        })
         .then(function (d) {
           if (window.stopStream) return;
           typ(false);
-          console.log('Groq API response:', JSON.stringify(d));
           var rep;
           if (d.error) {
-            rep = 'API Error: ' + (d.error.message || JSON.stringify(d.error));
+            rep = 'NVIDIA Error: ' + (d.error.message || JSON.stringify(d.error));
           } else if (d.choices && d.choices[0] && d.choices[0].message) {
             rep = clean(d.choices[0].message.content);
           } else {
-            rep = 'Unexpected response: ' + JSON.stringify(d);
+            rep = 'Unexpected API response structure.';
           }
           addMsg('ai', rep, true, true); push('ai', rep);
           resetSendButtons();
@@ -2970,15 +3101,24 @@
         .catch(function (e) {
           if (e.name === 'AbortError') return;
           typ(false);
-          console.error('Fetch error:', e);
-          addMsg('ai', 'Network Error: ' + e.message + ' — Please run on a local server (not file://)');
+          console.error('NVIDIA Fetch error:', e);
+          addMsg('ai', 'Fetch Error: ' + e.message + '. (Note: NVIDIA API may block direct browser requests due to CORS. You might need a backend proxy.)');
           resetSendButtons();
         });
     }
 
     function send() { if (handleStop()) return; var t = document.getElementById('ci').value.trim(); if (!t) return; doSend(t); }
     function send2() { if (handleStop()) return; var t = document.getElementById('ci2').value.trim(); if (!t) return; doSend(t); }
-    function sendAdv() { if (handleStop()) return; var t = document.getElementById('adv-ci').value.trim(); if (!t) return; goChat(); doSend(t); }
+    function sendAdv() { if (handleStop()) return; var t = document.getElementById('adv-ci').value.trim(); if (!t) return; openAdvancedDashboard(); doSend(t); }
+    function sendLanding() { 
+      if (handleStop()) return; 
+      var el = document.getElementById('ci-landing');
+      var t = el ? el.value.trim() : ''; 
+      if (!t) return; 
+      if (el) { el.value = ''; el.style.height = 'auto'; }
+      openAdvancedDashboard(); 
+      doSend(t); 
+    }
     function sendSP() { if (handleStop()) return; var t = document.getElementById('sp-ci').value.trim(); if (!t) return; doSend(t); }
     function go(t) { document.getElementById('ci').value = t; doSend(t); }
 
@@ -2986,8 +3126,15 @@
     function bindInput(id, sbId) { var el = document.getElementById(id), sb = document.getElementById(sbId); if (!el) return; el.addEventListener('input', function () { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; if (sb) { if (this.value.trim()) { sb.style.display = 'flex'; sb.classList.add('active'); } else { sb.classList.remove('active'); } } }); el.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (id === 'ci') send(); else if (id === 'ci2') send2(); else if (id === 'adv-ci') sendAdv(); else if (id === 'sp-ci') sendSP(); } }); }
     bindInput('ci', 'sb');
     bindInput('ci2', 'sb2');
-    bindInput('adv-ci', null); // No specific send button class toggle needed here as per design
+    bindInput('adv-ci', null);
     bindInput('sp-ci', 'sb-sp');
+
+    // Bind landing page chat input
+    var ciLanding = document.getElementById('ci-landing');
+    if (ciLanding) {
+      ciLanding.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; });
+      ciLanding.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendLanding(); } });
+    }
 
     // Replaced ncBtn assignment to avoid null reference error
 
@@ -3035,30 +3182,41 @@
       btn.style.display = sidebar && sidebar.classList.contains('hidden') ? 'flex' : 'none';
     }
 
-    function openAdvancedDashboard() {
-      // KEY FIX: #advanced-dashboard is INSIDE #home
-      // So we must NOT hide #home — only hide the landing-page child inside it
-
-      // Hide landing content (inside #home)
-      const landing = document.getElementById('landing-page');
-      if (landing) landing.style.display = 'none';
-
-      const landingChat = document.getElementById('landing-chat-section');
-      if (landingChat) landingChat.style.display = 'none';
-
-      // Hide chat view
-      const chat = document.getElementById('chat');
-      if (chat) chat.style.display = 'none';
-
-      // Keep #home visible (advanced-dashboard is inside it!)
+    function goHome() {
       const home = document.getElementById('home');
-      if (home) {
-        home.style.display = 'flex';
-        home.style.backgroundImage = 'none';
-      }
-
-      // Show Advanced Dashboard (inside #home)
+      const chat = document.getElementById('chat');
       const adv = document.getElementById('advanced-dashboard');
+      const main = document.querySelector('.main');
+      const landing = document.getElementById('landing-page');
+      if (main) main.style.display = 'flex';
+      if (home) home.style.display = 'flex';
+      if (landing) landing.style.display = 'flex';
+      if (chat) chat.style.display = 'none';
+      if (adv) adv.style.display = 'none';
+    }
+
+    function goChat() {
+      const adv = document.getElementById('advanced-dashboard');
+      const main = document.querySelector('.main');
+      const home = document.getElementById('home');
+      const mh = document.getElementById('adv-mh');
+      const empty = document.getElementById('adv-empty');
+      if (main) main.style.display = 'none';
+      if (home) home.style.display = 'none';
+      if (adv) adv.style.display = 'flex';
+      if (mh) mh.style.display = 'flex';
+      if (empty) empty.style.display = 'none';
+    }
+
+    function openAdvancedDashboard() {
+      const main = document.querySelector('.main');
+      const adv = document.getElementById('advanced-dashboard');
+      const home = document.getElementById('home');
+      const sp = document.getElementById('spreadsheet-view');
+      
+      if (main) main.style.display = 'none';
+      if (home) home.style.display = 'none';
+      if (sp) sp.style.display = 'none';
       if (adv) {
         adv.style.display = 'flex';
         adv.style.flexDirection = 'column';
@@ -3072,10 +3230,6 @@
         sb.style.display = 'flex';
         sb.classList.remove('hidden');
       }
-
-      // Hide Auth Buttons
-      const auth = document.getElementById('authButtons');
-      if (auth) auth.style.display = 'none';
 
       // Focus input
       const inp = document.getElementById('adv-ci');
@@ -3262,7 +3416,7 @@
     </div>
   </div>
 
-  <div id="spreadsheet-view" style="display: none; width: 100vw; height: 100vh; background: #ffffff; flex-direction: column; overflow: hidden; font-family: var(--f);">
+  <div id="spreadsheet-view" style="display: none; width: 100vw; height: 100vh; background: #000000; flex-direction: column; overflow: hidden; font-family: var(--f);">
     <!-- TOP NAV -->
     <div style="height: 50px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; padding: 0 16px;">
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -3289,21 +3443,15 @@
     </div>
 
     <div style="display: flex; flex: 1; overflow: hidden;">
-      <!-- LEFT SIDEBAR ICON ONLY -->
-      <div style="width: 50px; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; align-items: center; padding-top: 16px; gap: 24px; color: #6b7280;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <div style="padding: 6px; background: #fff5f5; color: #f97316; border-radius: 4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
+      <!-- LEFT SIDEBAR HIDDEN -->
+      <div style="display: none;">
 
       <!-- MAIN CENTER AREA -->
-      <div style="flex: 1; display: flex; flex-direction: column; background: #ffffff;">
+      <div style="flex: 1; display: flex; flex-direction: column; background: #000000;">
         <div id="sp-scroll-area" style="flex: 1; overflow-y: auto; padding-top: 100px; display: flex; flex-direction: column;">
           <div style="width: 100%; max-width: 820px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; flex: 1;">
             
-            <h1 id="sp-title" style="font-size: 24px; font-weight: 600; text-align: center; color: #111; margin-bottom: 24px; letter-spacing: -0.02em;">Let's find your next customer</h1>
+            <h1 id="sp-title" style="font-size: 24px; font-weight: 600; text-align: center; color: #ffffff; margin-bottom: 24px; letter-spacing: -0.02em;">Let's find your next customer</h1>
             
             <div id="sp-btns" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 40px;">
               <button style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 4px; background: #fff; font-size: 14px; color: #111; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-weight: 500;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Start a chat</button>
@@ -3330,9 +3478,9 @@
         </div>
 
         <div style="width: 100%; max-width: 820px; margin: 0 auto; padding: 16px 20px 10px 20px;">
-          <div style="width: 100%; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden; background: #fff;">
+          <div style="width: 100%; border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; background: #0c0c0c;">
             <div style="padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb;">
-              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #111;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #ffffff;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Add a sheet
               </div>
@@ -3346,10 +3494,10 @@
             </div>
 
             <div style="padding: 30px 16px; min-height: 70px;">
-              <textarea id="sp-ci" placeholder="Find leads, enrich data..." style="width: 100%; border: none; outline: none; font-size: 14px; resize: none; min-height: 40px; font-family: var(--f); color: #111; background: transparent; padding: 0;"></textarea>
+              <textarea id="sp-ci" placeholder="Find leads, enrich data..." style="width: 100%; border: none; outline: none; font-size: 14px; resize: none; min-height: 40px; font-family: var(--f); color: #ffffff; background: transparent; padding: 0;"></textarea>
             </div>
 
-            <div style="padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; background: #fff;">
+            <div style="padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); background: #0c0c0c;">
               <div style="display: flex; align-items: center; gap: 16px; color: #6b7280;">
                 <div style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
@@ -3362,20 +3510,39 @@
               
               <div style="display: flex; align-items: center; gap: 12px; color: #6b7280;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                <button id="sb-sp" onclick="sendSP()" style="background: #111; border: none; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                <button id="sb-sp" onclick="sendSP()" style="background: #ffffff; border: none; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
                 </button>
               </div>
             </div>
+            
+            <!-- Bottom Integrations Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 6px 18px; border-top: 1px solid rgba(255,255,255,0.05); background: transparent; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--mu);">
+                <div style="color: var(--mu2); display: flex; align-items: center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-4"/><path d="M8 8v2a4 4 0 0 0 8 0V8"/><path d="M10 2v6"/><path d="M14 2v6"/><rect width="12" height="8" x="6" y="8" rx="2" ry="2"/></svg>
+                </div>
+                Connect to any App, API, or MCP
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px; padding-right: 4px; margin-right: 4px;">
+                  <img src="https://img.icons8.com/color/48/gmail-new.png" width="16" height="16" title="Gmail" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://img.icons8.com/color/48/google-drive--v1.png" width="16" height="16" title="Drive" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://img.icons8.com/color/48/google-calendar--v2.png" width="16" height="16" title="Calendar" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://img.icons8.com/color/48/google-meet.png" width="16" height="16" title="Meet" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://img.icons8.com/color/48/slack-new.png" width="16" height="16" title="Slack" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="16" height="16" title="Notion" style="cursor: pointer; transition: transform 0.2s; filter: invert(1);" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                  <img src="https://img.icons8.com/color/48/github--v1.png" width="16" height="16" title="GitHub" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" />
+                </div>
+                <span style="font-size: 11px; font-weight: 700; color: #ffffff; background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: 4px; cursor: pointer;">+1000s</span>
+              </div>
+            </div>
           </div>
-
-
-
         </div>
       </div>
 
-      <!-- RIGHT SIDEBAR TOOLBOX -->
-      <div style="width: 400px; border-left: 1px solid #e5e7eb; background: #ffffff; display: flex; flex-direction: column; font-size: 13px;">
+      <!-- RIGHT SIDEBAR TOOLBOX HIDDEN -->
+      <div style="display: none;">
         <div style="padding: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #e5e7eb; color: #111;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Toolbox
@@ -3391,37 +3558,30 @@
             </div>
           </div>
           <div style="padding: 12px 16px 12px 16px; display: flex; flex-direction: column; gap: 8px;">
-            <div id="slack-sidebar-btn" onclick="connectSlack()" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; cursor: pointer; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span id="slack-sidebar-text" style="font-size: 13px; font-weight: 500;">Connect Slack</span> <img src="https://img.icons8.com/color/48/slack-new.png" width="22" height="22">
+            <div id="slack-sidebar-btn" onclick="connectSlack()" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; color: #a1a1aa; cursor: pointer; border: 1px dashed var(--b1); border-radius: 4px; transition: 0.2s;" onmouseover="this.style.background='#0a0a0a'; this.style.borderColor='#333';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--b1)';">
+              <span id="slack-sidebar-text" style="font-size: 11px; font-weight: 500;">Connect Slack</span> <img src="https://img.icons8.com/color/48/slack-new.png" width="16" height="16">
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.back              <span style="font-size: 13px; font-weight: 500;">Connect CRM</span>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <span style="background: white; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FF7A59%22%20d%3D%22M123.6%20390.5a72.5%2072.5%200%200%201-5.7-28.7c0-39.7%2032.2-72%2072-72a72.1%2072.1%200%200%201%2021.6%203.3L324.5%20180c-2.4-5.6-3.8-11.7-3.8-18.1%200-25.3%2020.5-45.9%2045.9-45.9s45.9%2020.5%2045.9%2045.9-20.5%2045.9-45.9%2045.9a46.1%2046.1%200%200%201-13.7-2.1L240.2%20318.5c2.4%205.6%203.8%2011.7%203.8%2018.1%200%2025.3-20.5%2045.9-45.9%2045.9s-45.9-20.5-45.9-45.9a46.1%2046.1%200%200%201%202.1-13.7L50.7%20219.2a46.1%2046.1%200%200%201-4.8%201.1C20.5%20220.3%200%20199.8%200%20174.4S20.5%20128.5%2045.9%20128.5s45.9%2020.5%2045.9%2045.9a46.1%2046.1%200%200%201-3.3%2017.2l128.2%20128.2a72.1%2072.1%200%200%201%2039.3-11.8c39.7%200%2072%2032.2%2072%2072s-32.2%2072-72%2072c-39.7%200-72-32.2-72-72%200-11.7%202.8-22.8%207.7-32.5L123.6%20390.5z%22%2F%3E%3C%2Fsvg%3E" width="22" height="22" style="transform: rotate(-90deg);"></span>
-                <img src="https://img.icons8.com/color/48/salesforce.png" width="24" height="24">
-                <img src="https://www.google.com/s2/favicons?domain=attio.com&sz=64" width="22" height="22">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; color: #a1a1aa; border: 1px dashed var(--b1); border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 5px;" onmouseover="this.style.background='#0a0a0a'; this.style.borderColor='#333';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--b1)';" onclick="openCRMModal()">
+              <span style="font-size: 11px; font-weight: 500;">Connect CRM</span>
+              <div style="display: flex; gap: 5px; align-items: center;">
+                <span style="background: #111; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1px solid var(--b1);"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FF7A59%22%20d%3D%22M123.6%20390.5a72.5%2072.5%200%200%201-5.7-28.7c0-39.7%2032.2-72%2072-72a72.1%2072.1%200%200%201%2021.6%203.3L324.5%20180c-2.4-5.6-3.8-11.7-3.8-18.1%200-25.3%2020.5-45.9%2045.9-45.9s45.9%2020.5%2045.9%2045.9-20.5%2045.9-45.9%2045.9a46.1%2046.1%200%200%201-13.7-2.1L240.2%20318.5c2.4%205.6%203.8%2011.7%203.8%2018.1%200%2025.3-20.5%2045.9-45.9%2045.9s-45.9-20.5-45.9-45.9a46.1%2046.1%200%200%201%202.1-13.7L50.7%20219.2a46.1%2046.1%200%200%201-4.8%201.1C20.5%20220.3%200%20199.8%200%20174.4S20.5%20128.5%2045.9%20128.5s45.9%2020.5%2045.9%2045.9a46.1%2046.1%200%200%201-3.3%2017.2l128.2%20128.2a72.1%2072.1%200%200%201%2039.3-11.8c39.7%200%2072%2032.2%2072%2072s-32.2%2072-72%2072c-39.7%200-72-32.2-72-72%200-11.7%202.8-22.8%207.7-32.5L123.6%20390.5z%22%2F%3E%3C%2Fsvg%3E" width="16" height="16" style="transform: rotate(-90deg);"></span>
+                <img src="https://img.icons8.com/color/48/salesforce.png" width="18" height="18">
+                <img src="https://www.google.com/s2/favicons?domain=attio.com&sz=64" width="16" height="16">
               </div>
             </div>
-            <div id="notion-sidebar-btn" onclick="connectNotion()" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span id="notion-sidebar-text" style="font-size: 13px; font-weight: 600;">Connect Notion</span>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="22" height="22">
+            <div id="notion-sidebar-btn" onclick="connectNotion()" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; color: #a1a1aa; border: 1px dashed var(--b1); border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 5px;" onmouseover="this.style.background='#0a0a0a'; this.style.borderColor='#333';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--b1)';">
+              <span id="notion-sidebar-text" style="font-size: 11px; font-weight: 500;">Connect Notion</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="16" height="16">
             </div>
 
-            <div id="discord-sidebar-btn" onclick="connectDiscord()" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span id="discord-sidebar-text" style="font-size: 13px; font-weight: 600;">Connect Discord</span>
-              <img src="https://img.icons8.com/color/48/discord-logo.png" width="22" height="22">
+            <div id="discord-sidebar-btn" onclick="connectDiscord()" style="display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; color: #a1a1aa; border: 1px dashed var(--b1); border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 5px;" onmouseover="this.style.background='#0a0a0a'; this.style.borderColor='#333';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--b1)';">
+              <span id="discord-sidebar-text" style="font-size: 11px; font-weight: 500;">Connect Discord</span>
+              <img src="https://img.icons8.com/color/48/discord-logo.png" width="16" height="16">
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #111; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 8px;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span style="font-size: 13px; font-weight: 600;">Add integration</span>
-              <div style="display: flex; gap: 8px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="20" height="20" onclick="connectNotion(); event.stopPropagation();" title="Connect Notion" style="cursor:pointer">
-                <img src="https://img.icons8.com/color/48/discord-logo.png" width="20" height="20" onclick="connectDiscord(); event.stopPropagation();" title="Connect Discord" style="cursor:pointer">
-                <img src="https://img.icons8.com/color/48/gmail-new.png" width="20" height="20" onclick="connectComposioGmail(); event.stopPropagation();" title="Connect Gmail" style="cursor:pointer">
-              </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; color: #6b7280; border: 1px dashed #e5e7eb; border-radius: 4px; transition: 0.2s; cursor: pointer;" onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db';" onmouseout="this.style.background='transparent'; this.style.borderColor='#e5e7eb';">
-              <span style="font-size: 13px; font-weight: 500;">Add MCP server</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; color: #71717a; border: 1px dashed var(--b1); border-radius: 4px; transition: 0.2s; cursor: pointer; margin-top: 5px;" onmouseover="this.style.background='#0a0a0a'; this.style.borderColor='#333';" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--b1)';">
+              <span style="font-size: 11px; font-weight: 400;">Add MCP server</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
           </div>
         </div>
@@ -3479,12 +3639,12 @@
   </div>
 
   <!-- CRM Selection Modal -->
-  <div id="crm-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);" onclick="if(event.target === this) closeCRMModal()">
-    <div style="background: white; width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); animation: modalFadeIn 0.2s ease-out;">
+  <div id="crm-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);" onclick="if(event.target === this) closeCRMModal()">
+    <div style="background: #0a0a0a; width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--b1); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); animation: modalFadeIn 0.2s ease-out;">
       <div style="padding: 20px 20px 12px 20px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-          <h3 style="font-size: 16px; font-weight: 600; color: #111; margin: 0;">Connect CRM</h3>
-          <p style="font-size: 13px; color: #6b7280; margin: 4px 0 0 0;">Choose a CRM to connect.</p>
+          <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin: 0;">Connect CRM</h3>
+          <p style="font-size: 13px; color: #a1a1aa; margin: 4px 0 0 0;">Choose a CRM to connect.</p>
         </div>
         <button onclick="closeCRMModal()" style="background: transparent; border: none; cursor: pointer; color: #9ca3af; padding: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -3492,33 +3652,33 @@
       </div>
       <div style="padding: 4px 10px 20px 10px; display: flex; flex-direction: column; gap: 2px;">
         <!-- HubSpot -->
-        <div class="crm-opt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'" onclick="connectHubSpot(); closeCRMModal();">
-          <span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;">
+        <div class="crm-opt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'" onclick="connectHubSpot(); closeCRMModal();">
+          <span style="background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid var(--b1); flex-shrink: 0;">
             <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20448%20512%22%3E%3Cpath%20fill%3D%22%23FF7A59%22%20d%3D%22M123.6%20390.5a72.5%2072.5%200%200%201-5.7-28.7c0-39.7%2032.2-72%2072-72a72.1%2072.1%200%200%201%2021.6%203.3L324.5%20180c-2.4-5.6-3.8-11.7-3.8-18.1%200-25.3%2020.5-45.9%2045.9-45.9s45.9%2020.5%2045.9%2045.9-20.5%2045.9-45.9%2045.9a46.1%2046.1%200%200%201-13.7-2.1L240.2%20318.5c2.4%205.6%203.8%2011.7%203.8%2018.1%200%2025.3-20.5%2045.9-45.9%2045.9s-45.9-20.5-45.9-45.9a46.1%2046.1%200%200%201%202.1-13.7L50.7%20219.2a46.1%2046.1%200%200%201-4.8%201.1C20.5%20220.3%200%20199.8%200%20174.4S20.5%20128.5%2045.9%20128.5s45.9%2020.5%2045.9%2045.9a46.1%2046.1%200%200%201-3.3%2017.2l128.2%20128.2a72.1%2072.1%200%200%201%2039.3-11.8c39.7%200%2072%2032.2%2072%2072s-32.2%2072-72%2072c-39.7%200-72-32.2-72-72%200-11.7%202.8-22.8%207.7-32.5L123.6%20390.5z%22%2F%3E%3C%2Fsvg%3E" width="24" height="24" style="transform: rotate(-90deg);">
           </span>
           <div>
-            <div style="font-size: 14px; font-weight: 600; color: #111;">HubSpot</div>
-            <div style="font-size: 12px; color: #6b7280;">Manage CRM data</div>
+            <div style="font-size: 14px; font-weight: 600; color: #fff;">HubSpot</div>
+            <div style="font-size: 12px; color: #a1a1aa;">Manage CRM data</div>
           </div>
         </div>
         <!-- Salesforce -->
-        <div id="salesforce-pill" class="crm-opt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid transparent;" onmouseover="this.style.background='#f9fafb'" onmouseout="if(!window.isGlobalSFConnected) this.style.background='transparent'" onclick="connectSalesforce()">
-          <span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;">
+        <div id="salesforce-pill" class="crm-opt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid transparent;" onmouseover="this.style.background='#111'" onmouseout="if(!window.isGlobalSFConnected) this.style.background='transparent'" onclick="connectSalesforce()">
+          <span style="background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid var(--b1); flex-shrink: 0;">
             <img src="https://img.icons8.com/color/48/salesforce.png" width="24" height="24">
           </span>
           <div>
-            <div style="font-size: 14px; font-weight: 600; color: #111;">Salesforce</div>
-            <div style="font-size: 12px; color: #6b7280;">CRM and sales automation</div>
+            <div style="font-size: 14px; font-weight: 600; color: #fff;">Salesforce</div>
+            <div style="font-size: 12px; color: #a1a1aa;">CRM and sales automation</div>
           </div>
         </div>
         <!-- Attio -->
         <div class="crm-opt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'" onclick="closeCRMModal();">
-          <span style="background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e7eb; flex-shrink: 0;">
+          <span style="background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid var(--b1); flex-shrink: 0;">
             <img src="https://www.google.com/s2/favicons?domain=attio.com&sz=64" width="20" height="20">
           </span>
           <div>
-            <div style="font-size: 14px; font-weight: 600; color: #111;">Attio</div>
-            <div style="font-size: 12px; color: #6b7280;">CRM for relationship-driven teams</div>
+            <div style="font-size: 14px; font-weight: 600; color: #fff;">Attio</div>
+            <div style="font-size: 12px; color: #a1a1aa;">CRM for relationship-driven teams</div>
           </div>
         </div>
       </div>
